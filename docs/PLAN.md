@@ -10,5 +10,8 @@
 - [x] **`init` コマンドの強化**
     - `OverviewCodingTestingThinking.md` やその他のガイドラインファイルを生成対象に追加。
 - [x] **言語設定の追加**
-    - `CospecConfig` に `language` フィールドを追加（デフォルト: `ja`）。
-    - `BaseAgent` でプロンプトに言語指示（日本語回答の強制）を自動付与するように更新。
+        - `CospecConfig` に `language` フィールドを追加（デフォルト: `ja`）。
+        - `BaseAgent` でプロンプトに言語指示（日本語回答の強制）を自動付与するように更新。
+    - [x] **バグ修正**
+        - `review` コマンドで生成されるファイル名の日付変数が展開されない問題を修正（f-stringエスケープ解除）。
+    

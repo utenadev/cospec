@@ -119,7 +119,7 @@ def review(tool: str = typer.Option(None, help="Tool to use (qwen, opencode)")) 
         
         # 3. Save Report
         date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        report_path = Path(f"docs/review_{{date_str}}_{agent.tool_name}.md")
+        report_path = Path(f"docs/review_{date_str}_{agent.tool_name}.md")
         report_path.write_text(report_content, encoding="utf-8")
         
         console.print(f"[green]Review complete![/green] Report saved to: {report_path}")
