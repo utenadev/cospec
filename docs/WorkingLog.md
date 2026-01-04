@@ -2,12 +2,19 @@
 
 ## 2026-01-04
 
-### `cospec init` コマンドの実装
-- 機能: プロジェクト推奨構造（`docs/`, `Taskfile.yml`）を展開するコマンドを実装。
-- テスト: `tests/test_init.py` を作成し、ファイル生成および既存ファイルのスキップ動作を検証。
-- 実装: `src/cospec/main.py` に `init` コマンドを追加。
+### `cospec review` コマンドの実装
+- 機能: ドキュメントとコードの不整合をレビューするコマンドを実装。
+- アーキテクチャ: 
+    - `Analyzer`: `docs/*.md` と `src/**/*.py` からコンテキストを収集。
+    - `External Tool Integration`: 自前でLLMクライアントを持たず、既存ツール（`qwen`, `opencode`）をサブプロセスとして呼び出す方式を採用。
+    - `Config`: ツール名や実行コマンドを `Pydantic Settings` で管理。
+- 実装詳細:
+    - `src/cospec/core/analyzer.py`, `src/cospec/core/config.py` を作成。
+    - `src/cospec/main.py` に `review` コマンドを追加。
+    - レポートを `docs/review_YYYYMMDD_HHMMSS_{tool}.md` として保存。
+- テスト: `tests/test_review.py` で `subprocess.run` をモックして正常系を検証。
 
-### 開発規約の強化とライセンスの追加
+### `cospec init` コマンドの実装
 - `LICENSE` ファイル（MIT License）を作成。
 - `docs/OverviewDesignThinking.md` に「作業ログの自動更新」に関する開発指針を追記。
     - AIエージェントがコミット時に自律的に `docs/WorkingLog.md` を更新することを規定。
