@@ -56,4 +56,10 @@ cospec/
 ├── Taskfile.yml           # Task definitions (needs update)
 ├── GEMINI.md              # Agent Context (This file)
 └── [Pending] cospec/      # Source code (to be created)
+
+## 6. Language Policy
+- **User communication**: Japanese
+- **Code comments**: English
+- **Commit messages**: English
+- **Documentation**: docs/以下の *.md は、既に日本語のものは継続して日本語で記述する
 ```

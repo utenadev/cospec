@@ -28,9 +28,29 @@ tasks:
       - '{{.PYTHON_BIN}} -m cospec.main hear'
 
   test-gen:
-    desc: Run the cospec test-gen command
+    desc: Run cospec test-gen command
     cmds:
       - '{{.PYTHON_BIN}} -m cospec.main test-gen'
+
+  agent:
+    desc: Run cospec agent commands
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main agent'
+
+  agent:add:
+    desc: Add a new AI-Agent
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main agent add --help'
+
+  agent:list:
+    desc: List all registered AI-Agents
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main agent list'
+
+  agent:test:
+    desc: Test a registered AI-Agent
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main agent test --help'
 
   test:
     desc: Run all tests

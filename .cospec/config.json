@@ -1,0 +1,40 @@
+{
+  "default_tool": "Qwen",
+  "dev_tool": "Qwen",
+  "language": "ja",
+  "tools": {
+    "Qwen": {
+      "command": "qwen",
+      "args": [
+        "{prompt}"
+      ]
+    },
+    "Opencode": {
+      "command": "opencode",
+      "args": [
+        "run",
+        "{prompt}"
+      ]
+    },
+    "Crush": {
+      "command": "crush",
+      "args": [
+        "run",
+        "{prompt}"
+      ]
+    },
+    "MistralVibe": {
+      "command": "vibe",
+      "args": [
+        "-p",
+        "{prompt}"
+      ]
+    },
+    "Gemini-CLI": {
+      "command": "gemini",
+      "args": [
+        "{prompt}"
+      ]
+    }
+  }
+}

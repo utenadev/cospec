@@ -43,8 +43,8 @@ task clean              # Clean temporary files and caches
 cospec init
 
 # Review codebase consistency against documentation
-cospec review --tool qwen      # Use Qwen Code (default)
-cospec review --tool opencode  # Use OpenCode
+cospec review --tool Qwen       # Use Qwen (default)
+cospec review --tool Opencode   # Use Opencode
 
 # Check project status
 cospec status
@@ -96,7 +96,7 @@ cospec/
 - `CospecConfig`: Configuration management with tool settings and language preferences
 
 **Agent Architecture:**
-- External tool integration (qwen, opencode)
+- External tool integration (Qwen, Opencode, Crush, MistralVibe, Gemini-CLI)
 - Language-aware prompting (Japanese/English support)
 - Context collection from docs/ directory and source code
 
@@ -122,7 +122,7 @@ cospec/
 ### External Dependencies
 
 **Required Tools:**
-- `qwen` or `opencode` CLI tools for AI agent integration
+- AI-Agent CLI tools (Qwen, Opencode, Crush, MistralVibe, Gemini-CLI) for integration
 - `go-task` for task automation (optional but recommended)
 
 **Python Dependencies:**
@@ -136,7 +136,7 @@ cospec/
 
 **Environment Variables:**
 - `COSPEC_LANGUAGE`: Language for AI responses (`ja` or `en`, default: `ja`)
-- `COSPEC_DEFAULT_TOOL`: Default tool for reviews (`qwen` or `opencode`, default: `qwen`)
+- `COSPEC_DEFAULT_TOOL`: Default tool for reviews (default: `Qwen`)
 
 **Configuration File:**
 - Configuration managed via `CospecConfig` class
@@ -206,7 +206,7 @@ pytest tests/test_main.py -xvs  # Run specific test file
 - **User Interaction**: All conversations with the user are conducted in Japanese
 - **Code Comments**: Source code comments and documentation should be in English
 - **Commit Messages**: Use English for commit messages to maintain consistency with the codebase
-- **Documentation**: Technical documentation in docs/ directory should be in English (except user-facing guides that may have Japanese versions)
+- **Documentation**: docs/以下の *.md は、既に日本語のものは継続して日本語で記述する
 
 **Note**: This policy ensures that while user communication remains in Japanese for clarity, the codebase maintains international standards with English comments and documentation.
 
@@ -215,7 +215,8 @@ pytest tests/test_main.py -xvs  # Run specific test file
 **Common Issues:**
 - `ModuleNotFoundError`: Ensure virtual environment is activated
 - `task: command not found`: Install go-task or use Python commands directly
-- External tool errors: Verify qwen/opencode CLI tools are installed and in PATH
+- External tool errors: Verify AI-Agent CLI tools (Qwen, Opencode, etc.) are installed and in PATH
+
 
 **Debug Commands:**
 ```bash
@@ -223,8 +224,11 @@ pytest tests/test_main.py -xvs  # Run specific test file
 python -c "import sys; print(sys.path)"
 
 # Verify tool installations
-which qwen
-which opencode
+which qwen          # For Qwen
+which opencode      # For Opencode
+which crush         # For Crush
+which vibe          # For MistralVibe
+which gemini        # For Gemini-CLI
 
 # Run individual checks
 ruff check src/cospec/

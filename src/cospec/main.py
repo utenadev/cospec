@@ -1,5 +1,7 @@
 import datetime
+import subprocess
 from pathlib import Path
+from typing import Optional
 
 import typer
 from rich.console import Console
@@ -7,15 +9,32 @@ from rich.console import Console
 from cospec.agents.hearer import HearerAgent
 from cospec.agents.reviewer import ReviewerAgent
 from cospec.agents.test_generator import TestGeneratorAgent
-from cospec.core.config import load_config
+from cospec.core.config import ToolConfig, load_config
 
 
-def _typer_option(*args, **kwargs):
-    """Helper function to avoid function call in argument defaults."""
-    return typer.Option(*args, **kwargs)
+def _analyze_help_output(help_output: str, command: str) -> list[str]:
+    """
+    Analyze command help output to infer prompt argument structure.
+
+    Returns a list of args for ToolConfig.
+    """
+    args = []
+
+    if "[prompt]" in help_output or "<prompt>" in help_output or "[PROMPT]" in help_output:
+        if "-p" in help_output or "-p, --prompt" in help_output:
+            args.append("-p")
+        args.append("{prompt}")
+    elif "[message]" in help_output or "<message>" in help_output:
+        args.append("{prompt}")
+    else:
+        args.append("{prompt}")
+
+    return args
 
 
 app = typer.Typer(help="cospec: Collaborative Specification CLI")
+agent_app = typer.Typer(help="Manage AI-Agent configurations")
+app.add_typer(agent_app, name="agent")
 console = Console()
 
 
@@ -114,28 +133,50 @@ def status() -> None:
 
 
 @app.command()
-def review(tool: str = _typer_option(None, help="Tool to use (qwen, opencode)")) -> None:
+def review(tool: Optional[str] = typer.Option(None, help="Tool to use (qwen, opencode)")) -> None:
     """
-    Review the codebase against the documentation using an AI agent.
+    Review codebase against documentation using an AI agent.
     """
     console.print("[bold blue]Reviewing project...[/bold blue]")
 
     try:
-        # 1. Load Config & Initialize Agent
+        # 1. Load Config
         config = load_config()
-        agent = ReviewerAgent(config, tool_name=tool)
 
-        console.print(f"Running {agent.tool_name} (Language: {config.language})...")
+        # 2. Determine tools to use
+        if tool:
+            tools_to_use = [tool]
+        else:
+            other_tools = [name for name in config.tools.keys() if name != config.dev_tool]
+            if len(other_tools) >= 2:
+                import random
 
-        # 2. Run Review
-        report_content = agent.review_project()
+                tools_to_use = random.sample(other_tools, 2)
+                console.print(f"[yellow]Using {len(tools_to_use)} different tools for diverse review[/yellow]")
+            elif other_tools:
+                tools_to_use = [other_tools[0]]
+                console.print("[yellow]Only 1 tool available (excluding dev_tool)[/yellow]")
+            else:
+                tools_to_use = [config.default_tool]
+                console.print("[yellow]No other tools available, using default[/yellow]")
 
-        # 3. Save Report
-        date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        report_path = Path(f"docs/review_{date_str}_{agent.tool_name}.md")
-        report_path.write_text(report_content, encoding="utf-8")
+        # 3. Run reviews
+        reports = []
+        for tool_name in tools_to_use:
+            console.print(f"Running {tool_name} (Language: {config.language})...")
+            agent = ReviewerAgent(config, tool_name=tool_name)
+            report_content = agent.review_project()
 
-        console.print(f"[green]Review complete![/green] Report saved to: {report_path}")
+            date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            report_path = Path(f"docs/review_{date_str}_{tool_name}.md")
+            report_path.write_text(report_content, encoding="utf-8")
+            reports.append((tool_name, report_path))
+            console.print(f"[green]Review with {tool_name} complete![/green] Report saved to: {report_path}\n")
+
+        # 4. Summary
+        console.print("[bold blue]Review Summary:[/bold blue]")
+        for tool_name, report_path in reports:
+            console.print(f"  • {tool_name}: {report_path}")
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
@@ -143,16 +184,21 @@ def review(tool: str = _typer_option(None, help="Tool to use (qwen, opencode)"))
 
 
 @app.command()
-def hear(tool: str = None, output: Path = None) -> None:
+def hear(tool: Optional[str] = None, output: Optional[Path] = None) -> None:
     """
     Conduct interactive hearing to clarify ambiguous requirements in SPEC.md.
     """
     console.print("[bold blue]Conducting interactive hearing...[/bold blue]")
 
     try:
-        # 1. Load Config & Initialize Agent
+        # 1. Load Config
         config = load_config()
-        agent = HearerAgent(config, tool_name=tool)
+
+        # 2. Select tool
+        tool_name = tool or config.select_tool_for_development()
+
+        # 3. Initialize Agent
+        agent = HearerAgent(config, tool_name=tool_name)
 
         console.print(f"Running {agent.tool_name} (Language: {config.language})...")
 
@@ -186,16 +232,21 @@ def hear(tool: str = None, output: Path = None) -> None:
 
 
 @app.command()
-def test_gen(tool: str = None, output: Path = None, validate: bool = False) -> None:
+def test_gen(tool: Optional[str] = None, output: Optional[Path] = None, validate: bool = False) -> None:
     """
     Generate test cases from specifications (Test-Driven Generation).
     """
     console.print("[bold blue]Generating test cases from specifications...[/bold blue]")
 
     try:
-        # 1. Load Config & Initialize Agent
+        # 1. Load Config
         config = load_config()
-        agent = TestGeneratorAgent(config, tool_name=tool)
+
+        # 2. Select tool
+        tool_name = tool or config.select_tool_for_development()
+
+        # 3. Initialize Agent
+        agent = TestGeneratorAgent(config, tool_name=tool_name)
 
         console.print(f"Running {agent.tool_name} (Language: {config.language})...")
 
@@ -246,6 +297,129 @@ Scenarios:
             summary_file.write_text(summary_content, encoding="utf-8")
             console.print(f"\n[green]Summary saved to:[/green] {summary_file}")
 
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
+
+
+@agent_app.command()
+def add(
+    name: str,
+    command: str = typer.Option(..., help="Command name to execute"),
+    help_flag: str = typer.Option("--help", help="Help flag to use for analysis"),
+) -> None:
+    """
+    Add a new AI-Agent configuration.
+
+    Analyzes the command's help output to infer prompt argument structure.
+    """
+    console.print(f"[bold blue]Adding AI-Agent '{name}'...[/bold blue]")
+
+    try:
+        config = load_config()
+
+        if name in config.tools:
+            console.print(f"[yellow]Warning:[/yellow] Agent '{name}' already exists. Overwriting...")
+
+        console.print(f"Analyzing command: {command} {help_flag}")
+
+        try:
+            result = subprocess.run([command, help_flag], capture_output=True, text=True, check=True)
+            help_output = result.stdout + result.stderr
+        except subprocess.CalledProcessError as e:
+            help_output = e.stdout + e.stderr
+            if not help_output:
+                console.print(f"[red]Error:[/red] Command '{command}' failed to execute or has no --help option")
+                raise typer.Exit(code=1) from None
+        except FileNotFoundError:
+            console.print(f"[red]Error:[/red] Command '{command}' not found in PATH")
+            raise typer.Exit(code=1) from None
+
+        console.print("[green]Command help output analyzed successfully[/green]")
+
+        args = _analyze_help_output(help_output, command)
+        console.print(f"Inferred args: {args}")
+
+        tool_config = ToolConfig(command=command, args=args)
+        config.tools[name] = tool_config
+        config.save_to_file()
+
+        console.print(f"[green]Success![/green] AI-Agent '{name}' added to configuration")
+
+    except typer.Exit:
+        raise
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
+
+
+@agent_app.command(name="list")
+def list_agents() -> None:
+    """
+    List all registered AI-Agents.
+    """
+    try:
+        config = load_config()
+        console.print("[bold blue]Registered AI-Agents:[/bold blue]\n")
+
+        for name, tool_config in config.tools.items():
+            console.print(f"[bold]{name}[/bold]")
+            console.print(f"  Command: {tool_config.command}")
+            console.print(f"  Args: {' '.join(tool_config.args)}")
+            console.print()
+
+        if not config.tools:
+            console.print("[yellow]No AI-Agents registered[/yellow]")
+
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
+
+
+@agent_app.command()
+def test(name: str) -> None:
+    """
+    Test a registered AI-Agent with a simple prompt.
+    """
+    console.print(f"[bold blue]Testing AI-Agent '{name}'...[/bold blue]")
+
+    try:
+        config = load_config()
+
+        if name not in config.tools:
+            console.print(f"[red]Error:[/red] Agent '{name}' not found")
+            console.print("Use 'cospec agent list' to see available agents")
+            raise typer.Exit(code=1)
+
+        tool_config = config.tools[name]
+        console.print(f"Running: {tool_config.command} {' '.join(tool_config.args)}")
+
+        test_prompt = "Hello! This is a test prompt."
+
+        cmd_args = [tool_config.command]
+        for arg in tool_config.args:
+            if "{prompt}" in arg:
+                cmd_args.append(arg.replace("{prompt}", test_prompt))
+            else:
+                cmd_args.append(arg)
+
+        try:
+            result = subprocess.run(cmd_args, capture_output=True, text=True, check=True)
+            console.print("[green]Success![/green] Agent responded:")
+            console.print(result.stdout)
+            if result.stderr:
+                console.print(f"[yellow]Warnings:[/yellow] {result.stderr}")
+        except subprocess.CalledProcessError as e:
+            console.print("[red]Error:[/red] Agent execution failed")
+            console.print(f"Output: {e.stdout}")
+            console.print(f"Error: {e.stderr}")
+            raise typer.Exit(code=1) from None
+        except FileNotFoundError:
+            console.print(f"[red]Error:[/red] Command '{tool_config.command}' not found in PATH")
+            raise typer.Exit(code=1) from None
+
+    except typer.Exit:
+        raise
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(code=1) from e

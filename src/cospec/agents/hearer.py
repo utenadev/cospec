@@ -1,13 +1,13 @@
 import re
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from cospec.agents.base import BaseAgent
 from cospec.core.analyzer import ProjectAnalyzer
 
 
 class HearerAgent(BaseAgent):
-    def __init__(self, config, tool_name: str = None):
+    def __init__(self, config: Any, tool_name: Optional[str] = None) -> None:
         super().__init__(config, tool_name)
         self.analyzer = ProjectAnalyzer()
 

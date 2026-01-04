@@ -1,5 +1,133 @@
 # 作業ログ (Working Log): cospec
 
+## 2026-01-04 AI-Agent追加機能の実装
+
+### ドキュメント更新
+- `README.ja.md` の用語統一（AI → AI-Agent、AIコーディングエージェント → AI-Agent、Agentic Coding Tools → AI-Agent）
+- `README.ja.md` に汎用性についての記述を追加（AI-Agent は qwen, opencode の利用をサンプルとしているが、この２つに限定せずプロンプトを与えてファイルを読めるAI-Agentであれば利用可能である）
+- `AGENTS.md` に agent コマンドの説明を追加
+- `PLAN.md` に実装計画を追加
+
+### 設定管理の強化
+- `CospecConfig` に `save_to_file()` メソッドを追加
+- `load_config()` 関数に外部ファイルからの設定読み込み機能を追加（デフォルト: `.cospec/config.json`）
+- 設定ファイルの永続化機能を実装
+
+### AI-Agent管理コマンドの実装
+- **`cospec agent add` コマンド**:
+  - `--name` オプションで AI-Agent名を指定
+  - `--command` オプションで実行コマンド名を指定
+  - `--help` オプションでコマンドライン引数解析用のヘルプフラグを指定（デフォルト: `--help`）
+  - 指定されたコマンドに `--help` を実行し、出力を解析して ToolConfig を自動生成
+  - 設定を `.cospec/config.json` に永続化
+
+- **`cospec agent list` コマンド**:
+  - 登録済み AI-Agent の一覧表示
+  - 各エージェントの設定（コマンド、引数）を表示
+
+- **`cospec agent test` コマンド**:
+  - 指定 AI-Agent の実行確認
+  - テストプロンプトを使用して正常動作を検証
+  - エラーハンドリングと診断メッセージを表示
+
+### テストの実装
+- `tests/test_agent.py` を作成
+- モックを使用したコマンド実行テスト
+- 設定ファイルの読み書きテスト
+- 全24件のテストが合格（既存20件 + 新規4件）
+
+### 品質保証
+- ruff linting: すべてのチェックをパス
+- mypy type checking: 型注釈を修正完了
+- pytest: 24 passed
+
+### AI-Agentの追加と整理
+- **AI-Agentの追加（Crush, MistralVibe, Gemini-CLI）**:
+  - `Crush`: `crush run {prompt}` 形式で追加
+  - `MistralVibe`: `vibe -p {prompt}` 形式で追加
+  - `Gemini-CLI`: `gemini {prompt}` 形式で追加
+  - ダミーAI-Agent（`mycli`）を削除
+
+- **設定ファイルの整理**:
+  - `opencode` → `Opencode` に名称変更
+  - `--print-logs` オプションを削除し、不要なログ出力を抑制
+  - 引数を修正（`--file` オプションを削除し、`run {prompt}`形式に統一）
+
+### opencode 問題の調査と解決
+- **問題の根本原因特定**:
+  - opencode CLIはセッション管理型エージェントであり、stdoutには回答を出力しない
+  - subprocess経由ではファイルに生成された結果をキャプチャできない
+  - 対話型環境では動作可能だが、非対話型のCLI連携には不向き
+
+- **実機テスト**:
+  - 直接コマンドでの動作確認（`echo "明日の横浜の天気" | opencode run`）
+  - 設定修正後の動作確認で正常応答を確認
+  - opencodeが実際に天気情報を取得し、応答として表示することを確認
+
+- **結論**:
+  - opencode CLIはセッション管理型エージェントであるため、外部ツールからのsubprocess呼び出しには不向きであることが判明
+  - 直接コマンド実行では正常に動作し、天気情報を取得して応答として表示することが確認された
+
+### AI-Agentの結果返し方調査結果
+
+現在登録されているすべてのAI-Agentの動作特性を調査し、結果の返し方を整理:
+
+- **Qwen**: stdout（標準出力）に直接応答を出力 ✅
+- **Crush**: runサブコマンドで非対話モードとなり、stdoutに応答を出力 ✅
+- **Opencode**: runサブコマンドでstdoutに応答を出力（セッション管理型だがCLI連携可能）✅
+- **MistralVibe**: -pオプションでプログラムモードとなり、stdoutに応答を出力 ✅
+- **Gemini-CLI**: 位置引数でプロンプトを受け取り、stdoutに応答を出力 ✅
+
+**まとめ**:
+- すべてのAI-Agentはstdoutに応答を出力する方式
+- BaseAgent.run_tool()と完全互換
+- 以前のopencode問題は、存在しない`--file`オプションを使おうとしたのが原因
+- CLI連携自体は問題なく可能であることを確認
+
+### ネーミングルールの統一
+
+AI-Agentの名称を大文字スタート（PascalCase/CamelCase）に統一:
+- `qwen` → `Qwen`
+- `mycli` → 削除（ダミーAI-Agent）
+- `opencode` → `Opencode`（既に変更済み）
+- `Crush` → `Crush`（既に対応済み）
+- `MistralVibe` → `MistralVibe`（既に対応済み）
+- `Gemini-CLI` → `Gemini-CLI`（既に対応済み）
+## 2026-01-04
+
+### 設定管理の拡張
+- `CospecConfig` に `dev_tool` フィールド追加
+- 環境変数 `COSPEC_DEV_TOOL` の読み込み対応
+- `select_tool_for_development()` メソッド追加：開発用ツール選択
+- `select_tool_for_review()` メソッド追加：レビュー用ツール選択
+
+### ツール選択ロジックの実装
+- **hear/test-gen 用**:
+  - `COSPEC_DEV_TOOL` が設定されていればそれを使用
+  - 未設定なら `default_tool` を使用
+- **review 用**:
+  - 利用ツール以外からランダムに2つを選択
+  - 最低2つのツールが登録されているか確認
+  - ツールが足りない場合はデフォルトを使用
+  - 2つのツールで順次レビューを実行
+  - レビューサマリーを表示
+
+### CLI コマンドの更新
+- `hear` コマンドで自動選択ロジックを適用
+- `test-gen` コマンドで自動選択ロジックを適用
+- `review` コマンドで複数ツールレビューを実装
+
+### テストと品質保証
+- 環境変数の動作確認（`export COSPEC_DEV_TOOL=opencode`）
+- ツール選択ロジックのテスト
+- ruff linting: すべてのチェックをパス
+- mypy type checking: 型注釈を修正完了
+
+### ドキュメント更新
+- `README.ja.md` にツール選択ロジックの説明を追加
+- 前提条件（2つ以上のAI-Agent）の明記
+- `PLAN.md` に実装計画と実施内容を記録
+
 ## 2026-01-04
 
 ### GitHub へのプッシュ

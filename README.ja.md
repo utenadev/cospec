@@ -74,9 +74,9 @@ flowchart TD
    - SPEC.md に不明点（"任意"、"未定"、"?" など）がないか確認
 
 4. **ヒアリング** (`cospec hear`)
-   - SPEC.md の不明点を自動抽出
-   - AI がインタラクティブに質問して明確化を支援
-   - 仕様のあいまいさを具体的な要件に変換
+    - SPEC.md の不明点を自動抽出
+    - AI-Agent がインタラクティブに質問して明確化を支援
+    - 仕様のあいまいさを具体的な要件に変換
 
 5. **実装**
    - 明確な仕様に基づいて実装を進める
@@ -109,10 +109,11 @@ flowchart TD
 
 ## アーキテクチャ
 
-`cospec` は AI コーディングエージェントのオーケストレーターとして機能します。重厚な LLM ランタイムを内包する代わりに、インストール済みの CLI ツール（Agentic Coding Tools）に処理を委譲します。
+`cospec` は AI-Agent のオーケストレーターとして機能します。重厚な LLM ランタイムを内包する代わりに、インストール済みの CLI ツール（AI-Agent）に処理を委譲します。
 
-- **現在の連携先**: `qwen` (Qwen Code), `opencode`
+- **現在の連携先**: `Qwen` (Qwen Code), `Opencode`, `Crush`, `MistralVibe`, `Gemini-CLI`
 - **コンテキスト認識**: `cospec` は関連するコンテキスト（ドキュメント + コード）を自動的に収集し、これらのツールに対して効果的なプロンプトを構築します。
+- **汎用性**: AI-Agent は Qwen, Opencode の利用をサンプルとしているが、これらに限定せずプロンプトを与えてファイルを読めるAI-Agentであれば利用可能である。
 
 ## はじめに
 
@@ -120,7 +121,7 @@ flowchart TD
 
 - Python 3.10 以上
 - [go-task](https://taskfile.dev/) （任意ですが推奨）
-- 外部ツール: `qwen` または `opencode` がインストールされ、パスが通っていること。
+- 外部ツール: 少なくとも1つのAI-Agent（例: `Qwen`, `Opencode`, `Crush` 等）がインストールされ、パスが通っていること。
 
 ### インストールとセットアップ
 
@@ -149,13 +150,13 @@ cospec init
 
 ```bash
 # 外部ツールを使用して SPEC.md の不明点をヒアリング
-cospec hear --tool qwen
+cospec hear --tool Qwen
 
 # 結果をファイルに出力
-cospec hear --tool qwen --output hearing_results.txt
+cospec hear --tool Qwen --output hearing_results.txt
 
-# OpenCode を使用
-cospec hear --tool opencode
+# Opencode を使用
+cospec hear --tool Opencode
 ```
 AI が SPEC.md の不明点（"任意"、"未定"、"?" など）を抽出し、インタラクティブに質問します。
 ユーザーの回答に基づいて SPEC.md の改善案を提案します。
@@ -173,7 +174,7 @@ cospec test-gen --output tests/custom/
 cospec test-gen --validate
 
 # Qwen Code を使用して高度なテスト生成
-cospec test-gen --tool qwen
+cospec test-gen --tool Qwen
 ```
 SPEC.md と PLAN.md からテストシナリオを自動抽出し、pytest 形式のテストコードを生成します。
 
@@ -181,10 +182,10 @@ SPEC.md と PLAN.md からテストシナリオを自動抽出し、pytest 形�
 
 ```bash
 # Qwen Code を使用（デフォルト）
-cospec review --tool qwen
+cospec review --tool Qwen
 
-# OpenCode を使用
-cospec review --tool opencode
+# Opencode を使用
+cospec review --tool Opencode
 ```
 エージェントが `docs/` と `src/` ファイルを分析し、Markdown 形式のレポートを `docs/review_YYYYMMDD_...` に生成します。
 
@@ -194,6 +195,32 @@ cospec review --tool opencode
 cospec status
 ```
 現在の開発フェーズと次のアクションを表示します。
+
+#### 6. AI-Agent の管理
+
+**前提条件**: レビュー機能の多様な意見を得るために、2つ以上の AI-Agent をインストールすることを推奨します。
+
+**デフォルト設定**: `Qwen` が初期設定されています。他の AI-Agent を使用するには、環境変数 `COSPEC_DEV_TOOL`（開発用）または `COSPEC_DEFAULT_TOOL`（レビュー用）を設定するか、コマンド実行時に `--tool` オプションで指定してください。
+
+```bash
+# 登録済み AI-Agent の一覧表示
+cospec agent list
+
+# 新しい AI-Agent を追加（コマンドの --help を自動解析）
+cospec agent add MistralVibe --command vibe
+
+# AI-Agent の動作確認
+cospec agent test MistralVibe
+```
+
+**ツール選択ロジック**:
+- **hear, test-gen**: 環境変数 `COSPEC_DEV_TOOL` が設定されていればそれを使用、未設定なら `default_tool` を使用
+- **review**: 利用しているツール以外からランダムに2つを選択してレビューを実行
+
+**設定方法**:
+- AI-Agent の設定は `.cospec/config.json` に保存されます
+- 不要な AI-Agent は `.cospec/config.json` を直接編集して削除してください
+- 使用可能な AI-Agent がインストール済みであることを確認してください
 
 ## 開発について
 
@@ -217,7 +244,7 @@ task type-check            # 型チェック（mypy）
 | 変数名 | デフォルト | 説明 |
 |----------|---------|-------------|
 | `COSPEC_LANGUAGE` | `ja` | AI 応答の言語設定（`ja`, `en`）。デフォルトは日本語です。 |
-| `COSPEC_DEFAULT_TOOL` | `qwen` | レビューに使用するデフォルトツール。 |
+| `COSPEC_DEFAULT_TOOL` | `Qwen` | レビューに使用するデフォルトツール。 |
 
 ## ドキュメントファイル
 
