@@ -5,6 +5,7 @@ import datetime
 from cospec.core.config import load_config
 from cospec.agents.reviewer import ReviewerAgent
 from cospec.agents.hearer import HearerAgent
+from cospec.agents.test_generator import TestGeneratorAgent
 
 app = typer.Typer(help="cospec: Collaborative Specification CLI")
 console = Console()
@@ -169,6 +170,74 @@ def hear(
         if output:
             output.write_text(str(result), encoding="utf-8")
             console.print(f"[green]Results saved to:[/green] {output}")
+
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1)
+
+@app.command()
+def test_gen(
+    tool: str = typer.Option(None, help="Tool to use for test generation (qwen, opencode)"),
+    output: Path = typer.Option(None, "--output", "-o", help="Output directory for generated test files"),
+    validate: bool = typer.Option(False, "--validate", "-v", help="Validate generated test files")
+) -> None:
+    """
+    Generate test cases from specifications (Test-Driven Generation).
+    """
+    console.print("[bold blue]Generating test cases from specifications...[/bold blue]")
+
+    try:
+        # 1. Load Config & Initialize Agent
+        config = load_config()
+        agent = TestGeneratorAgent(config, tool_name=tool)
+
+        console.print(f"Running {agent.tool_name} (Language: {config.language})...")
+
+        # 2. Generate Tests
+        result = agent.generate_tests(output_dir=output if output else Path("tests/generated/"))
+
+        if result["status"] == "error":
+            console.print(f"[red]Error:[/red] {result['message']}")
+            raise typer.Exit(code=1)
+
+        # 3. Display Results
+        console.print(f"[green]Test generation complete![/green]")
+        console.print(result["message"])
+
+        # 4. Display generated scenarios
+        if result["scenarios"]:
+            console.print(f"\n[bold]Generated {len(result['scenarios'])} test scenarios:[/bold]")
+            for i, scenario in enumerate(result["scenarios"], 1):
+                console.print(f"  {i}. [{scenario['priority']}] {scenario['description']}")
+
+        # 5. Display generated test files
+        if result["test_files"]:
+            console.print(f"\n[bold]Generated {len(result['test_files'])} test files:[/bold]")
+            for filename in result["test_files"].keys():
+                console.print(f"  • {filename}")
+
+        # 6. Validate generated files if requested
+        if validate and result["test_files"]:
+            console.print("\n[bold]Validating generated test files...[/bold]")
+            for filename, content in result["test_files"].items():
+                if "import pytest" in content and "def test_" in content:
+                    console.print(f"  ✓ {filename} - Valid pytest format")
+                else:
+                    console.print(f"  ✗ {filename} - Invalid format")
+
+        # 7. Save results summary
+        summary_file = output / "test_generation_summary.txt"
+        summary_content = f"""Test Generation Summary
+Generated: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Scenarios: {len(result['scenarios'])}
+Test Files: {len(result['test_files'])}
+Output Directory: {result['output_dir']}
+
+Scenarios:
+{chr(10).join([f"- [{s['priority']}] {s['description']}" for s in result['scenarios']])}
+"""
+        summary_file.write_text(summary_content, encoding="utf-8")
+        console.print(f"\n[green]Summary saved to:[/green] {summary_file}")
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
