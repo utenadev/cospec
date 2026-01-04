@@ -18,6 +18,75 @@
 - **`cospec hear`**: Interactive hearing to resolve ambiguities in `SPEC.md`.
 - **`cospec test-gen`**: Generate test cases from specifications (Test-Driven Generation).
 
+## Development Workflow
+
+cospec supports **Document-Driven Development (D3)** by providing tools for each phase of the development cycle.
+
+```mermaid
+flowchart TD
+    A[1. Initialize<br/>cospec init] --> B[2. Define Spec<br/>Create docs/SPEC.md]
+
+    B --> C{3. Spec Check}
+    C -->|Ambiguities| D[4. Clarify<br/>cospec hear]
+    D --> E[Refine SPEC.md]
+    E --> C
+    C -->|Clear| F[5. Implement<br/>Write code]
+    F --> G[6. Generate Tests<br/>cospec test-gen]
+    G --> H[7. Complete Tests]
+    H --> I[8. Code Review<br/>cospec review]
+
+    I --> J{Quality Check}
+    J -->|Issues| F
+    J -->|Pass| K[9. Done]
+
+    subgraph "Document-Driven Cycle"
+        B
+        D
+        E
+    end
+
+    subgraph "Implementation Cycle"
+        F
+        G
+        H
+    end
+
+    style A fill:#e1f5ff
+    style K fill:#e8f5e9
+    style C fill:#fff9c4
+    style D fill:#ffe0b2
+    style G fill:#f3e5f5
+    style I fill:#fce4ec
+```
+
+### Workflow Overview
+
+1. **Initialize** (`cospec init`): Set up project structure with `docs/`, templates, and guidelines.
+
+2. **Define Specifications**: Create and edit `docs/SPEC.md` with functional requirements, user inputs, and expected behavior.
+
+3. **Spec Check**: Identify ambiguities ("TBD", "optional", "?", etc.)
+
+4. **Clarify** (`cospec hear`): Extract unclear points and use AI to resolve ambiguities interactively.
+
+5. **Implement**: Code based on clear specifications.
+
+6. **Generate Tests** (`cospec test-gen`): Extract test scenarios from SPEC.md and generate pytest-compatible test code.
+
+7. **Complete Tests**: Implement TODO sections in generated tests for Test-Driven Development.
+
+8. **Code Review** (`cospec review`): AI analyzes code consistency against documentation.
+
+9. **Done**: Pass quality checks and release.
+
+### Workflow Features
+
+- **Document-Driven**: Start from SPEC.md as the single source of truth
+- **Consistency-First**: Resolve specification ambiguities before implementation
+- **AI-Human Collaboration**: AI analyzes and proposes; humans make decisions
+- **Test-Driven Generation**: Auto-generated tests from specifications ensure quality
+- **Iterative Refinement**: Return to implementation when review reveals issues
+
 ## Architecture
 
 `cospec` acts as an orchestrator for AI coding agents. Instead of embedding a heavy LLM runtime, it delegates intelligence to installed CLI tools (Agentic Coding Tools).
@@ -52,7 +121,36 @@ cospec init
 ```
 This creates a `docs/` directory with templates for specifications and guidelines (`OverviewCodingTestingThinking.md`).
 
-#### 2. Review Code Consistency
+#### 2. Clarify Ambiguous Requirements
+```bash
+# Use external tool to interactively clarify unclear points in SPEC.md
+cospec hear --tool qwen
+
+# Output results to a file
+cospec hear --tool qwen --output hearing_results.txt
+
+# Use OpenCode
+cospec hear --tool opencode
+```
+The AI extracts unclear points (e.g., "optional", "undecided", "?") from SPEC.md and guides you through interactive clarification.
+
+#### 3. Generate Test Cases
+```bash
+# Generate tests from SPEC.md (default: tests/generated/)
+cospec test-gen
+
+# Specify custom output directory
+cospec test-gen --output tests/custom/
+
+# Validate generated test files
+cospec test-gen --validate
+
+# Use Qwen Code for advanced test generation
+cospec test-gen --tool qwen
+```
+Extracts test scenarios from SPEC.md and PLAN.md, then generates pytest-compatible test code.
+
+#### 4. Review Code Consistency
 ```bash
 # Use Qwen Code (default)
 cospec review --tool qwen
@@ -61,6 +159,12 @@ cospec review --tool qwen
 cospec review --tool opencode
 ```
 The agent will analyze your `docs/` and `src/` files and generate a Markdown report in `docs/review_YYYYMMDD_...`.
+
+#### 5. Check Project Status
+```bash
+cospec status
+```
+Displays current development phase and next actions.
 
 ## Configuration
 
