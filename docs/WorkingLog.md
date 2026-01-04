@@ -2,6 +2,11 @@
 
 ## 2026-01-04
 
+### `cospec init` コマンドの実装
+- 機能: プロジェクト推奨構造（`docs/`, `Taskfile.yml`）を展開するコマンドを実装。
+- テスト: `tests/test_init.py` を作成し、ファイル生成および既存ファイルのスキップ動作を検証。
+- 実装: `src/cospec/main.py` に `init` コマンドを追加。
+
 ### 開発規約の強化とライセンスの追加
 - `LICENSE` ファイル（MIT License）を作成。
 - `docs/OverviewDesignThinking.md` に「作業ログの自動更新」に関する開発指針を追記。
