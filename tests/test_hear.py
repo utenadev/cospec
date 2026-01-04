@@ -1,6 +1,5 @@
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
+from unittest.mock import Mock, patch
+
 from cospec.agents.hearer import HearerAgent
 from cospec.core.config import CospecConfig
 
@@ -12,8 +11,7 @@ class TestHearerAgent:
         self.config.default_tool = "qwen"
         self.config.language = "ja"
 
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
-    def test_extract_unclear_points_when_conditions(self, mock_analyzer):
+    def test_extract_unclear_points_when_conditions(self):
         """条件分岐の不明点を正しく抽出できる"""
         agent = HearerAgent(self.config)
 
@@ -35,8 +33,7 @@ class TestHearerAgent:
         assert "条件 '条件が不明な場合' の詳細が不明です" in unclear_points
         assert "条件 '未定の条件' の詳細が不明です" in unclear_points
 
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
-    def test_extract_unclear_points_user_inputs(self, mock_analyzer):
+    def test_extract_unclear_points_user_inputs(self):
         """ユーザー入力の不明点を正しく抽出できる"""
         agent = HearerAgent(self.config)
 
@@ -55,8 +52,7 @@ class TestHearerAgent:
         assert "引数 '--input (任意)' の必須/任意の判断基準が不明です" in unclear_points
         assert "引数 '--output (オプション)' の必須/任意の判断基準が不明です" in unclear_points
 
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
-    def test_extract_unclear_points_error_handling(self, mock_analyzer):
+    def test_extract_unclear_points_error_handling(self):
         """エラー処理の不明点を正しく抽出できる"""
         agent = HearerAgent(self.config)
 
@@ -75,22 +71,18 @@ class TestHearerAgent:
         assert "エラー処理 '未定義のエラー処理' の詳細が不明です" in unclear_points
         assert "エラー処理 '不明な例外処理' の詳細が不明です" in unclear_points
 
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
-    def test_generate_interactive_questions(self, mock_analyzer):
+    def test_generate_interactive_questions(self):
         """インタラクティブな質問を正しく生成できる"""
         agent = HearerAgent(self.config)
 
-        unclear_points = [
-            "条件 '不明な条件' の詳細が不明です",
-            "引数 '--input' の必須/任意の判断基準が不明です"
-        ]
+        unclear_points = ["条件 '不明な条件' の詳細が不明です", "引数 '--input' の必須/任意の判断基準が不明です"]
 
         questions = agent.generate_interactive_questions(unclear_points)
 
         assert "1. 条件 '不明な条件' の詳細が不明です について、具体的な要件を教えてください。" in questions
         assert "2. 引数 '--input' の必須/任意の判断基準が不明です について、具体的な要件を教えてください。" in questions
 
-    @patch('cospec.agents.hearer.Path')
+    @patch("cospec.agents.hearer.Path")
     def test_hear_requirements_spec_not_found(self, mock_path):
         """SPEC.md が存在しない場合のエラーハンドリング"""
         # SPEC.md が存在しない設定
@@ -105,8 +97,8 @@ class TestHearerAgent:
         assert result["status"] == "error"
         assert "SPEC.md ファイルが見つかりません" in result["message"]
 
-    @patch('cospec.agents.hearer.Path')
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
+    @patch("cospec.agents.hearer.Path")
+    @patch("cospec.agents.hearer.ProjectAnalyzer")
     def test_hear_requirements_no_unclear_points(self, mock_analyzer, mock_path):
         """不明点がない場合の正常終了"""
         # SPEC.md が存在し、内容がある設定
@@ -134,8 +126,8 @@ class TestHearerAgent:
         assert "不明点が見つかりませんでした" in result["message"]
         assert result["questions"] == []
 
-    @patch('cospec.agents.hearer.Path')
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
+    @patch("cospec.agents.hearer.Path")
+    @patch("cospec.agents.hearer.ProjectAnalyzer")
     def test_hear_requirements_with_unclear_points(self, mock_analyzer, mock_path):
         """不明点がある場合の正常処理"""
         # SPEC.md が存在し、不明点がある設定
@@ -165,8 +157,8 @@ class TestHearerAgent:
         assert "ai_response" in result
         assert result["ai_response"] == "AIの回答"
 
-    @patch('cospec.agents.hearer.Path')
-    @patch('cospec.agents.hearer.ProjectAnalyzer')
+    @patch("cospec.agents.hearer.Path")
+    @patch("cospec.agents.hearer.ProjectAnalyzer")
     def test_hear_requirements_tool_error(self, mock_analyzer, mock_path):
         """外部ツール実行時のエラー処理"""
         # SPEC.md が存在し、不明点がある設定

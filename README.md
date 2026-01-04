@@ -15,8 +15,6 @@
 ### Implemented
 - **`cospec init`**: Initialize a new project with the recommended structure (`docs/`, `Taskfile.yml`) and guideline files.
 - **`cospec review`**: Analyze the codebase for inconsistencies using external AI tools (e.g., `qwen`, `opencode`).
-
-### Planned
 - **`cospec hear`**: Interactive hearing to resolve ambiguities in `SPEC.md`.
 - **`cospec test-gen`**: Generate test cases from specifications (Test-Driven Generation).
 

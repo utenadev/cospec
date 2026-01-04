@@ -1,14 +1,23 @@
+import datetime
+from pathlib import Path
+
 import typer
 from rich.console import Console
-from pathlib import Path
-import datetime
-from cospec.core.config import load_config
-from cospec.agents.reviewer import ReviewerAgent
+
 from cospec.agents.hearer import HearerAgent
+from cospec.agents.reviewer import ReviewerAgent
 from cospec.agents.test_generator import TestGeneratorAgent
+from cospec.core.config import load_config
+
+
+def _typer_option(*args, **kwargs):
+    """Helper function to avoid function call in argument defaults."""
+    return typer.Option(*args, **kwargs)
+
 
 app = typer.Typer(help="cospec: Collaborative Specification CLI")
 console = Console()
+
 
 @app.command()
 def init() -> None:
@@ -20,7 +29,7 @@ def init() -> None:
     # 1. Create docs directory
     docs_dir = Path("docs")
     docs_dir.mkdir(exist_ok=True)
-    
+
     # 2. Define templates
     overview_design = """# Overview: Design Thinking
 
@@ -93,6 +102,7 @@ tasks:
 
     console.print(f"\n[bold]Done![/bold] Created {created_count} files, skipped {skipped_count} files.")
 
+
 @app.command()
 def status() -> None:
     """
@@ -102,8 +112,9 @@ def status() -> None:
     console.print("Current Phase: [green]Inception[/green]")
     console.print("\nNext Action: Update SPEC.md or run 'cospec hear'")
 
+
 @app.command()
-def review(tool: str = typer.Option(None, help="Tool to use (qwen, opencode)")) -> None:
+def review(tool: str = _typer_option(None, help="Tool to use (qwen, opencode)")) -> None:
     """
     Review the codebase against the documentation using an AI agent.
     """
@@ -128,13 +139,11 @@ def review(tool: str = typer.Option(None, help="Tool to use (qwen, opencode)")) 
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
+
 
 @app.command()
-def hear(
-    tool: str = typer.Option(None, help="Tool to use for interactive hearing (qwen, opencode)"),
-    output: Path = typer.Option(None, "--output", "-o", help="Output file for hearing results")
-) -> None:
+def hear(tool: str = None, output: Path = None) -> None:
     """
     Conduct interactive hearing to clarify ambiguous requirements in SPEC.md.
     """
@@ -155,7 +164,7 @@ def hear(
             raise typer.Exit(code=1)
 
         # 3. Display Results
-        console.print(f"[green]Hearing complete![/green]")
+        console.print("[green]Hearing complete![/green]")
 
         if result["questions"]:
             console.print("\n[bold]Generated Questions:[/bold]")
@@ -173,14 +182,11 @@ def hear(
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
+
 
 @app.command()
-def test_gen(
-    tool: str = typer.Option(None, help="Tool to use for test generation (qwen, opencode)"),
-    output: Path = typer.Option(None, "--output", "-o", help="Output directory for generated test files"),
-    validate: bool = typer.Option(False, "--validate", "-v", help="Validate generated test files")
-) -> None:
+def test_gen(tool: str = None, output: Path = None, validate: bool = False) -> None:
     """
     Generate test cases from specifications (Test-Driven Generation).
     """
@@ -201,7 +207,7 @@ def test_gen(
             raise typer.Exit(code=1)
 
         # 3. Display Results
-        console.print(f"[green]Test generation complete![/green]")
+        console.print("[green]Test generation complete![/green]")
         console.print(result["message"])
 
         # 4. Display generated scenarios
@@ -226,22 +232,24 @@ def test_gen(
                     console.print(f"  ✗ {filename} - Invalid format")
 
         # 7. Save results summary
-        summary_file = output / "test_generation_summary.txt"
-        summary_content = f"""Test Generation Summary
+        if output:
+            summary_file = output / "test_generation_summary.txt"
+            summary_content = f"""Test Generation Summary
 Generated: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Scenarios: {len(result['scenarios'])}
-Test Files: {len(result['test_files'])}
-Output Directory: {result['output_dir']}
+Scenarios: {len(result["scenarios"])}
+Test Files: {len(result["test_files"])}
+Output Directory: {result["output_dir"]}
 
 Scenarios:
-{chr(10).join([f"- [{s['priority']}] {s['description']}" for s in result['scenarios']])}
+{chr(10).join([f"- [{s['priority']}] {s['description']}" for s in result["scenarios"]])}
 """
-        summary_file.write_text(summary_content, encoding="utf-8")
-        console.print(f"\n[green]Summary saved to:[/green] {summary_file}")
+            summary_file.write_text(summary_content, encoding="utf-8")
+            console.print(f"\n[green]Summary saved to:[/green] {summary_file}")
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
+
 
 if __name__ == "__main__":
     app()

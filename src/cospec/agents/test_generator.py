@@ -1,12 +1,13 @@
-from pathlib import Path
-from typing import List, Dict, Any, Optional
 import re
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 from cospec.agents.base import BaseAgent
 from cospec.core.analyzer import ProjectAnalyzer
 
 
 class TestGeneratorAgent(BaseAgent):
-    def __init__(self, config, tool_name: str = None):
+    def __init__(self, config: Any, tool_name: Optional[str] = None) -> None:
         super().__init__(config, tool_name)
         self.analyzer = ProjectAnalyzer()
 
@@ -17,78 +18,82 @@ class TestGeneratorAgent(BaseAgent):
         scenarios = []
 
         # 1. 機能要件からテストシナリオを抽出
-        fr_sections = re.findall(r'## FR-\d+: (.+?)(?=\n##|\n#|\Z)', spec_content, re.DOTALL)
+        fr_sections = re.findall(r"## FR-\d+: (.+?)(?=\n##|\n#|\Z)", spec_content, re.DOTALL)
 
         for fr_section in fr_sections:
-            fr_title = fr_section.split('\n')[0].strip()
-            fr_body = '\n'.join(fr_section.split('\n')[1:]).strip()
+            fr_title = fr_section.split("\n")[0].strip()
+            fr_body = "\n".join(fr_section.split("\n")[1:]).strip()
 
             # 期待される挙動を抽出
-            expected_behaviors = re.findall(r'### 期待される挙動\n(.*?)(?=\n###|\n##|\Z)', fr_body, re.DOTALL)
+            expected_behaviors = re.findall(r"### 期待される挙動\n(.*?)(?=\n###|\n##|\Z)", fr_body, re.DOTALL)
 
             if expected_behaviors:
                 behaviors_text = expected_behaviors[0].strip()
                 # 只取以 '-' 开头的行
-                for line in behaviors_text.split('\n'):
+                for line in behaviors_text.split("\n"):
                     line = line.strip()
-                    if line.startswith('-'):
+                    if line.startswith("-"):
                         scenario = {
-                            'type': 'functional',
-                            'feature': fr_title,
-                            'description': line.lstrip('- ').strip(),
-                            'priority': 'high'
+                            "type": "functional",
+                            "feature": fr_title,
+                            "description": line.lstrip("- ").strip(),
+                            "priority": "high",
                         }
                         scenarios.append(scenario)
 
             # 条件分岐を抽出
-            conditions = re.findall(r'### ユーザー入力\n(.*?)(?=\n###|\n##|\Z)', fr_body, re.DOTALL)
+            conditions = re.findall(r"### ユーザー入力\n(.*?)(?=\n###|\n##|\Z)", fr_body, re.DOTALL)
 
             if conditions:
                 conditions_text = conditions[0].strip()
                 # 只取以 '-' 开头的行
-                for line in conditions_text.split('\n'):
+                for line in conditions_text.split("\n"):
                     line = line.strip()
-                    if line.startswith('-'):
+                    if line.startswith("-"):
                         scenario = {
-                            'type': 'input_validation',
-                            'feature': fr_title,
-                            'description': line.lstrip('- ').strip(),
-                            'priority': 'medium'
+                            "type": "input_validation",
+                            "feature": fr_title,
+                            "description": line.lstrip("- ").strip(),
+                            "priority": "medium",
                         }
                         scenarios.append(scenario)
 
         # 2. エラー処理シナリオを抽出（重複を避ける）
         seen_errors = set()
         # 只在 "期待される挙動" 部分中查找失敗時
-        behavior_sections = re.findall(r'### 期待される挙動\n(.*?)(?=\n###|\n##|\Z)', spec_content, re.DOTALL)
+        behavior_sections = re.findall(r"### 期待される挙動\n(.*?)(?=\n###|\n##|\Z)", spec_content, re.DOTALL)
         for section in behavior_sections:
-            error_scenarios = re.findall(r'失敗時: (.+?)(?=\n|$)', section)
+            error_scenarios = re.findall(r"失敗時: (.+?)(?=\n|$)", section)
             for error in error_scenarios:
                 error_text = error.strip()
                 if error_text and error_text not in seen_errors:
-                    scenarios.append({
-                        'type': 'error_handling',
-                        'feature': 'error_handling',
-                        'description': error_text,
-                        'priority': 'high'
-                    })
+                    scenarios.append(
+                        {
+                            "type": "error_handling",
+                            "feature": "error_handling",
+                            "description": error_text,
+                            "priority": "high",
+                        }
+                    )
                     seen_errors.add(error_text)
 
         # 3. 出力形式シナリオを抽出（重複を避ける）
         seen_outputs = set()
         # 只在 "出力" 部分中查找
-        output_sections = re.findall(r'### 出力\n(.*?)(?=\n###|\n##|\Z)', spec_content, re.DOTALL)
+        output_sections = re.findall(r"### 出力\n(.*?)(?=\n###|\n##|\Z)", spec_content, re.DOTALL)
         for section in output_sections:
-            output_scenarios = re.findall(r'出力: (.+?)(?=\n|$)', section)
+            output_scenarios = re.findall(r"出力: (.+?)(?=\n|$)", section)
             for output in output_scenarios:
                 output_text = output.strip()
                 if output_text and output_text not in seen_outputs:
-                    scenarios.append({
-                        'type': 'output_format',
-                        'feature': 'output_format',
-                        'description': output_text,
-                        'priority': 'medium'
-                    })
+                    scenarios.append(
+                        {
+                            "type": "output_format",
+                            "feature": "output_format",
+                            "description": output_text,
+                            "priority": "medium",
+                        }
+                    )
                     seen_outputs.add(output_text)
 
         return scenarios
@@ -100,28 +105,27 @@ class TestGeneratorAgent(BaseAgent):
         scenarios = []
 
         # 実装予定のタスクからテストシナリオを抽出
-        todo_items = re.findall(r'- \[ \] (.+)', plan_content)
+        todo_items = re.findall(r"- \[ \] (.+)", plan_content)
 
         for todo in todo_items:
-            scenarios.append({
-                'type': 'integration',
-                'feature': 'implementation',
-                'description': todo.strip(),
-                'priority': 'low'
-            })
+            scenarios.append(
+                {"type": "integration", "feature": "implementation", "description": todo.strip(), "priority": "low"}
+            )
 
         return scenarios
 
-    def generate_pytest_test_code(self, scenarios: List[Dict[str, Any]], output_dir: Optional[Path] = None) -> Dict[str, str]:
+    def generate_pytest_test_code(
+        self, scenarios: List[Dict[str, Any]], output_dir: Optional[Path] = None
+    ) -> Dict[str, str]:
         """
         pytest 形式のテストコードを生成する
         """
-        test_files = {}
+        test_files: Dict[str, str] = {}
 
         # フィーチャーごとにテストファイルを分類
-        scenarios_by_feature = {}
+        scenarios_by_feature: Dict[str, List[Dict[str, Any]]] = {}
         for scenario in scenarios:
-            feature = scenario['feature']
+            feature = scenario["feature"]
             if feature not in scenarios_by_feature:
                 scenarios_by_feature[feature] = []
             scenarios_by_feature[feature].append(scenario)
@@ -136,7 +140,7 @@ class TestGeneratorAgent(BaseAgent):
             output_dir.mkdir(parents=True, exist_ok=True)
             for filename, content in test_files.items():
                 filepath = output_dir / filename
-                filepath.write_text(content, encoding='utf-8')
+                filepath.write_text(content, encoding="utf-8")
 
         return test_files
 
@@ -146,20 +150,20 @@ class TestGeneratorAgent(BaseAgent):
         """
         # テストクラス名を生成（キャメルケースにする）
         # Remove underscores and spaces, then capitalize each word
-        words = feature.replace('_', ' ').split()
+        words = feature.replace("_", " ").split()
         class_name = "Test"
         for word in words:
             if word:
                 class_name += word.capitalize()
 
         test_methods = []
-        for i, scenario in enumerate(scenarios):
+        for _i, scenario in enumerate(scenarios):
             # テストメソッド名を生成
-            method_name = self._generate_method_name(scenario['description'])
-            priority = scenario['priority']
+            method_name = self._generate_method_name(scenario["description"])
+            priority = scenario["priority"]
 
             test_method = f'''    def test_{method_name}(self):
-        """{scenario['description']} (Priority: {priority})"""
+        """{scenario["description"]} (Priority: {priority})"""
         # TODO: 実装を記述
         pass
 
@@ -185,12 +189,12 @@ class {class_name}:
         テストメソッド名を生成
         """
         # 特殊文字を除去し、スネークケースに変換
-        name = re.sub(r'[^a-zA-Z0-9\s]', '', description)
-        name = re.sub(r'\s+', '_', name.lower())
-        name = name.strip('_')
+        name = re.sub(r"[^a-zA-Z0-9\s]", "", description)
+        name = re.sub(r"\s+", "_", name.lower())
+        name = name.strip("_")
 
         # pytest の命名規則に合わせる
-        if not name.startswith('test_'):
+        if not name.startswith("test_"):
             name = f"test_{name}"
 
         # 重複を避けるためのサフィックスを付ける
@@ -200,15 +204,12 @@ class {class_name}:
         """
         テストケースを自動生成するメインメソッド
         """
-        context = self.analyzer.collect_context()
+        self.analyzer.collect_context()
 
         # SPEC.md からシナリオを抽出
         spec_path = Path("docs/SPEC.md")
         if not spec_path.exists():
-            return {
-                "status": "error",
-                "message": "SPEC.md ファイルが見つかりません"
-            }
+            return {"status": "error", "message": "SPEC.md ファイルが見つかりません"}
 
         spec_content = spec_path.read_text(encoding="utf-8")
         spec_scenarios = self.extract_test_scenarios_from_spec(spec_content)
@@ -228,7 +229,7 @@ class {class_name}:
                 "status": "success",
                 "message": "テストシナリオが見つかりませんでした",
                 "scenarios": [],
-                "test_files": {}
+                "test_files": {},
             }
 
         # pytest テストコードを生成
@@ -236,8 +237,9 @@ class {class_name}:
 
         return {
             "status": "success",
-            "message": f"{len(all_scenarios)} 個のテストシナリオを抽出し、{len(test_files)} 個のテストファイルを生成しました",
+            "message": f"{len(all_scenarios)} 個のテストシナリオを抽出し、"
+            f"{len(test_files)} 個のテストファイルを生成しました",
             "scenarios": all_scenarios,
             "test_files": test_files,
-            "output_dir": str(output_dir) if output_dir else None
+            "output_dir": str(output_dir) if output_dir else None,
         }

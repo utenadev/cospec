@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+
 
 class ProjectAnalyzer:
     def __init__(self, root_dir: Path = Path(".")):
@@ -10,7 +10,7 @@ class ProjectAnalyzer:
         Collects content from key files (docs and source) to form the context for the LLM.
         """
         context_parts = []
-        
+
         # 1. Read Documentation
         docs_dir = self.root_dir / "docs"
         if docs_dir.exists():
@@ -21,7 +21,7 @@ class ProjectAnalyzer:
         # 2. List Source Files & Read Content (Limit size)
         # Reading src/cospec/**/*.py
         src_files = list(self.root_dir.glob("src/cospec/**/*.py"))
-        
+
         context_parts.append("--- Source Code ---")
         for src_file in src_files:
             try:
