@@ -1,10 +1,9 @@
 import typer
 from rich.console import Console
 from pathlib import Path
-import subprocess
 import datetime
-from cospec.core.analyzer import ProjectAnalyzer
 from cospec.core.config import load_config
+from cospec.agents.reviewer import ReviewerAgent
 
 app = typer.Typer(help="cospec: Collaborative Specification CLI")
 console = Console()
@@ -20,11 +19,60 @@ def init() -> None:
     docs_dir = Path("docs")
     docs_dir.mkdir(exist_ok=True)
     
-    # 2. Define templates (Minimal content for now)
+    # 2. Define templates
+    overview_design = """# Overview: Design Thinking
+
+## 1. Codebase as Context
+Documentation is the ground truth.
+
+## 2. Consistency First
+Eliminate discrepancies between docs and code before implementation.
+
+## 3. Decision Support
+AI provides options with Pros/Cons to support human decision-making.
+"""
+
+    overview_coding = """# Overview: Coding & Testing
+
+## 1. Coding Standards: "Guardrails for AI"
+- **Strong Typing**: Use Pydantic/Types everywhere. Avoid Any.
+- **Self-Documenting**: Write Docstrings before implementation.
+
+## 2. Testing Strategy: "Test-Driven Generation (TDG)"
+1. **Scaffold**: Agree on test scenarios.
+2. **Test Generation**: Write failing tests (Red) first.
+3. **Implementation**: Write code to pass tests (Green).
+4. **Refactoring**: Clean up code.
+- **Mocking**: Mock all external I/O.
+"""
+
+    spec_template = """# SPEC: Project Name
+
+## 1. Overview
+Describe the project purpose and goals.
+
+## 2. Requirements
+List functional requirements.
+"""
+
+    taskfile_template = """version: '3'
+
+tasks:
+  setup:
+    desc: Setup environment
+    cmds:
+      - echo 'Setup complete'
+
+  test:
+    desc: Run tests
+    cmds:
+      - echo 'Running tests...'"""
+
     files = {
-        "docs/SPEC.md": "# SPEC: Project Name\n\n## 1. Overview\n\n## 2. Requirements\n",
-        "docs/OverviewDesignThinking.md": "# Overview: Design Thinking\n\n- Codebase as Context\n- Consistency First\n",
-        "Taskfile.yml": "version: '3'\n\ntasks:\n  setup:\n    cmds:\n      - echo 'Setup'\n",
+        "docs/SPEC.md": spec_template,
+        "docs/OverviewDesignThinking.md": overview_design,
+        "docs/OverviewCodingTestingThinking.md": overview_coding,
+        "Taskfile.yml": taskfile_template,
         ".gitignore": "venv/\n__pycache__/\n.env\n",
     }
 
@@ -59,53 +107,26 @@ def review(tool: str = typer.Option(None, help="Tool to use (qwen, opencode)")) 
     """
     console.print("[bold blue]Reviewing project...[/bold blue]")
     
-    # 1. Load Config & Select Tool
-    config = load_config()
-    tool_name = tool or config.default_tool
-    if tool_name not in config.tools:
-        console.print(f"[red]Error: Tool '{tool_name}' not configured.[/red]")
-        raise typer.Exit(code=1)
-    
-    tool_config = config.tools[tool_name]
-    
-    # 2. Gather Context
-    analyzer = ProjectAnalyzer()
-    context = analyzer.collect_context()
-    
-    system_prompt = (
-        "You are a strict code reviewer. Compare the documentation and code provided below.\n"
-        "Identify inconsistencies, missing features, and guideline violations.\n"
-        "Output a Markdown report.\n\n"
-        "--- Context ---\n"
-    )
-    full_prompt = system_prompt + context
-    
-    # 3. Construct Command
-    # Replace {prompt} in args
-    cmd_args = [tool_config.command]
-    for arg in tool_config.args:
-        if "{prompt}" in arg:
-            cmd_args.append(arg.replace("{prompt}", full_prompt))
-        else:
-            cmd_args.append(arg)
-            
-    # 4. Execute Tool
-    console.print(f"Running {tool_name}...")
     try:
-        result = subprocess.run(cmd_args, capture_output=True, text=True, check=True)
-        report_content = result.stdout
+        # 1. Load Config & Initialize Agent
+        config = load_config()
+        agent = ReviewerAgent(config, tool_name=tool)
         
-        # 5. Save Report
+        console.print(f"Running {agent.tool_name} (Language: {config.language})...")
+        
+        # 2. Run Review
+        report_content = agent.review_project()
+        
+        # 3. Save Report
         date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        report_path = Path(f"docs/review_{date_str}_{tool_name}.md")
+        report_path = Path(f"docs/review_{{date_str}}_{agent.tool_name}.md")
         report_path.write_text(report_content, encoding="utf-8")
         
         console.print(f"[green]Review complete![/green] Report saved to: {report_path}")
         
-    except subprocess.CalledProcessError as e:
-        console.print(f"[red]Error running tool:[/red] {e.stderr}")
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(code=1)
 
 if __name__ == "__main__":
     app()
-

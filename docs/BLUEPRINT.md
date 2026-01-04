@@ -12,14 +12,17 @@
 ### 2.1 ディレクトリ構成
 ```
 cospec/
-├── cospec/
-│   ├── main.py            # Entry point
-│   ├── core/              # Business Logic
-│   │   ├── agent.py       # LLM Client wrapper
-│   │   ├── analyzer.py    # Codebase scanning
-│   │   └── reporter.py    # Markdown report generation
-│   ├── prompts/           # System Prompts for Agents
-│   └── templates/         # Spec/Test templates
+├── src/
+│   └── cospec/
+│       ├── main.py            # Entry point
+│       ├── core/              # Business Logic
+│       │   ├── analyzer.py    # Codebase scanning
+│       │   └── config.py      # Configuration & Settings
+│       ├── agents/            # Agent Definitions (Wrappers for External Tools)
+│       │   ├── base.py        # Base Agent logic
+│       │   └── reviewer.py    # Reviewer Agent
+│       ├── prompts/           # System Prompts for Agents
+│       └── templates/         # Spec/Test templates
 ├── docs/                  # Project Context
 ├── tests/
 └── Taskfile.yml

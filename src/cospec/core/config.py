@@ -10,6 +10,7 @@ class ToolConfig(BaseModel):
 
 class CospecConfig(BaseSettings):
     default_tool: str = "qwen"
+    language: str = "ja"
     tools: Dict[str, ToolConfig] = Field(default_factory=lambda: {
         "qwen": ToolConfig(command="qwen", args=["{prompt}"]),
         "opencode": ToolConfig(command="opencode", args=["run", "{prompt}"])
