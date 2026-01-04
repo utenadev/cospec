@@ -1,0 +1,61 @@
+version: '3'
+
+vars:
+  PROJECT_NAME: cospec
+  VENV_PATH: venv
+  PYTHON_BIN: '{{if eq OS "windows"}}venv/Scripts/python{{else}}venv/bin/python{{end}}'
+  PIP_BIN: '{{if eq OS "windows"}}venv/Scripts/pip{{else}}venv/bin/pip{{end}}'
+
+tasks:
+  setup:
+    desc: Setup the project with virtual environment and dependencies
+    cmds:
+      - 'echo "Setting up {{.PROJECT_NAME}}..."'
+      - 'python3 -m venv {{.VENV_PATH}}'
+      - '{{.PIP_BIN}} install --upgrade pip'
+      - '{{.PIP_BIN}} install -e ".[dev]"'
+      - 'echo "Setup complete!"'
+      - 'echo "Run: source venv/bin/activate && cospec --help"'
+
+  run:
+    desc: Run the cospec CLI tool
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main'
+
+  test:
+    desc: Run all tests
+    cmds:
+      - '{{.PYTHON_BIN}} -m pytest'
+
+  lint:
+    desc: Run linters (ruff check and format)
+    cmds:
+      - '{{.PYTHON_BIN}} -m ruff check .'
+      - '{{.PYTHON_BIN}} -m ruff format --check .'
+
+  lint-fix:
+    desc: Run linters and fix issues
+    cmds:
+      - '{{.PYTHON_BIN}} -m ruff check . --fix'
+      - '{{.PYTHON_BIN}} -m ruff format .'
+
+  type-check:
+    desc: Run type checking (mypy)
+    cmds:
+      - '{{.PYTHON_BIN}} -m mypy src/cospec'
+
+  check:
+    desc: Run all checks (lint, type-check, test)
+    cmds:
+      - 'task: lint'
+      - 'task: type-check'
+      - 'task: test'
+
+  clean:
+    desc: Clean up temporary files
+    cmds:
+      - 'rm -rf {{.VENV_PATH}}'
+      - 'rm -rf __pycache__/'
+      - 'find . -type f -name "*.pyc" -delete'
+      - 'find . -type d -name "__pycache__" -delete'
+      - 'rm -rf .ruff_cache/ .mypy_cache/ .pytest_cache/'
