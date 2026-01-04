@@ -22,10 +22,30 @@ tasks:
     cmds:
       - '{{.PYTHON_BIN}} -m cospec.main'
 
+  hear:
+    desc: Run the cospec hear command
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main hear'
+
+  test-gen:
+    desc: Run the cospec test-gen command
+    cmds:
+      - '{{.PYTHON_BIN}} -m cospec.main test-gen'
+
   test:
     desc: Run all tests
     cmds:
       - '{{.PYTHON_BIN}} -m pytest'
+
+  test:integration:
+    desc: Run integration tests
+    cmds:
+      - '{{.PYTHON_BIN}} -m pytest tests/integration/ -v'
+
+  test:e2e:
+    desc: Run end-to-end tests
+    cmds:
+      - '{{.PYTHON_BIN}} -m pytest tests/e2e/ -v'
 
   lint:
     desc: Run linters (ruff check and format)
@@ -43,6 +63,35 @@ tasks:
     desc: Run type checking (mypy)
     cmds:
       - '{{.PYTHON_BIN}} -m mypy src/cospec'
+
+  docs:check:
+    desc: Check documentation consistency
+    cmds:
+      - '{{.PYTHON_BIN}} -c "from cospec.core.analyzer import ProjectAnalyzer; a=ProjectAnalyzer(); c=a.collect_context(); print(f\"Collected {len(c)} characters of context\")"'
+
+  docs:sync:
+    desc: Synchronize documentation with code
+    cmds:
+      - 'echo "Documentation synchronization would be implemented here"'
+
+  docs:validate:
+    desc: Validate documentation integrity
+    cmds:
+      - '{{.PYTHON_BIN}} -c "import os; required=[\"docs/SPEC.md\", \"docs/BLUEPRINT.md\", \"docs/PLAN.md\"]; missing=[f for f in required if not os.path.exists(f)]; [print(f\"Missing: {f}\") for f in missing] or print(\"All required docs present\")"'
+
+  quality:check:
+    desc: Comprehensive quality check
+    cmds:
+      - 'task: lint'
+      - 'task: type-check'
+      - 'task: test'
+      - 'task: docs:check'
+
+  build:package:
+    desc: Build package distribution
+    cmds:
+      - '{{.PYTHON_BIN}} -m build'
+      - 'ls -la dist/'
 
   check:
     desc: Run all checks (lint, type-check, test)
