@@ -15,9 +15,7 @@ class ProjectAnalyzer:
         docs_dir = self.root_dir / "docs"
         if docs_dir.exists():
             for doc_file in docs_dir.glob("*.md"):
-                # Skip large files or logs if necessary
-                if doc_file.name == "WorkingLog.md":
-                    continue
+                # Read all markdown files including PLAN.md and WorkingLog.md
                 context_parts.append(f"--- File: {doc_file} ---\n{doc_file.read_text(encoding='utf-8')}\n")
 
         # 2. List Source Files & Read Content (Limit size)
