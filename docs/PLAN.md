@@ -1,14 +1,14 @@
-# Implementation Plan
+# 実装計画 (Implementation Plan)
 
-## 2026-01-04 Review Feedback Response
-- [x] **Fix Directory Structure in Docs**
-    - Update `docs/BLUEPRINT.md` to reflect `src/cospec` layout.
-- [x] **Restructure Agent System**
-    - Create `src/cospec/agents/` package.
-    - Implement `BaseAgent` and `ReviewerAgent`.
-    - Refactor `review` command to use the new agent class.
-- [x] **Enhance `init` Command**
-    - Include `OverviewCodingTestingThinking.md` and other guideline files in the generation list.
-- [x] **Add Language Configuration**
-    - Add `language` field to `CospecConfig` (default: `ja`).
-    - Update `BaseAgent` to append language instructions to prompts.
+## 2026-01-04 レビュー指摘事項への対応
+- [x] **ドキュメント内のディレクトリ構造修正**
+    - `docs/BLUEPRINT.md` を更新し、`src/cospec` レイアウトを反映。
+- [x] **エージェントシステムの構造化**
+    - `src/cospec/agents/` パッケージを作成。
+    - `BaseAgent` および `ReviewerAgent` を実装。
+    - `review` コマンドを新しいエージェントクラスを使うようにリファクタリング。
+- [x] **`init` コマンドの強化**
+    - `OverviewCodingTestingThinking.md` やその他のガイドラインファイルを生成対象に追加。
+- [x] **言語設定の追加**
+    - `CospecConfig` に `language` フィールドを追加（デフォルト: `ja`）。
+    - `BaseAgent` でプロンプトに言語指示（日本語回答の強制）を自動付与するように更新。
