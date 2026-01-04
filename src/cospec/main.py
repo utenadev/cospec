@@ -4,6 +4,7 @@ from pathlib import Path
 import datetime
 from cospec.core.config import load_config
 from cospec.agents.reviewer import ReviewerAgent
+from cospec.agents.hearer import HearerAgent
 
 app = typer.Typer(help="cospec: Collaborative Specification CLI")
 console = Console()
@@ -106,24 +107,69 @@ def review(tool: str = typer.Option(None, help="Tool to use (qwen, opencode)")) 
     Review the codebase against the documentation using an AI agent.
     """
     console.print("[bold blue]Reviewing project...[/bold blue]")
-    
+
     try:
         # 1. Load Config & Initialize Agent
         config = load_config()
         agent = ReviewerAgent(config, tool_name=tool)
-        
+
         console.print(f"Running {agent.tool_name} (Language: {config.language})...")
-        
+
         # 2. Run Review
         report_content = agent.review_project()
-        
+
         # 3. Save Report
         date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         report_path = Path(f"docs/review_{date_str}_{agent.tool_name}.md")
         report_path.write_text(report_content, encoding="utf-8")
-        
+
         console.print(f"[green]Review complete![/green] Report saved to: {report_path}")
-        
+
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1)
+
+@app.command()
+def hear(
+    tool: str = typer.Option(None, help="Tool to use for interactive hearing (qwen, opencode)"),
+    output: Path = typer.Option(None, "--output", "-o", help="Output file for hearing results")
+) -> None:
+    """
+    Conduct interactive hearing to clarify ambiguous requirements in SPEC.md.
+    """
+    console.print("[bold blue]Conducting interactive hearing...[/bold blue]")
+
+    try:
+        # 1. Load Config & Initialize Agent
+        config = load_config()
+        agent = HearerAgent(config, tool_name=tool)
+
+        console.print(f"Running {agent.tool_name} (Language: {config.language})...")
+
+        # 2. Conduct Hearing
+        result = agent.hear_requirements()
+
+        if result["status"] == "error":
+            console.print(f"[red]Error:[/red] {result['message']}")
+            raise typer.Exit(code=1)
+
+        # 3. Display Results
+        console.print(f"[green]Hearing complete![/green]")
+
+        if result["questions"]:
+            console.print("\n[bold]Generated Questions:[/bold]")
+            for question in result["questions"]:
+                console.print(f"  • {question}")
+
+        if "ai_response" in result:
+            console.print("\n[bold]AI Response:[/bold]")
+            console.print(result["ai_response"])
+
+        # 4. Save Results
+        if output:
+            output.write_text(str(result), encoding="utf-8")
+            console.print(f"[green]Results saved to:[/green] {output}")
+
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(code=1)
