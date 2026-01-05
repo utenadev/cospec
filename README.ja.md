@@ -247,6 +247,35 @@ task type-check            # 型チェック（mypy）
 | `COSPEC_LANGUAGE` | `ja` | AI 応答の言語設定（`ja`, `en`）。デフォルトは日本語です。 |
 | `COSPEC_DEFAULT_TOOL` | `Qwen` | レビューに使用するデフォルトツール。 |
 
+## 👨💻 初見開発者・初回AIエージェント向けガイド
+
+本プロジェクトで開発を行う前に、**.rules/ ディレクトリ以下の3ファイルを必ず読んでください**。
+
+### ✅ 必須ガイド
+- 開発判断の**唯一の根拠**となるガイドラインです：
+1. **[`.rules/OverviewDesignThinking.md`](./.rules/OverviewDesignThinking.md)**: 設計思想（**なぜ**このルールがあるのか）
+2. **[`.rules/OverviewBasicRule.md`](./.rules/OverviewBasicRule.md)**: 実践ルール（**どうやって**開発するか）
+3. **[`.rules/OverviewCodingTestingThinking.md`](./.rules/OverviewCodingTestingThinking.md)**: コーディング思想（**どのような**コードを書くか）
+
+### 🚀 思想 → 実践の順番で読む
+- 必ず OverviewDesignThinking で「なぜ」を理解してから、OverviewBasicRule で「どうやって」を確認
+- `task check` 必須：実装完了後は必ず `task check` (lint + type-check + test) がパスすること
+- PLAN/WorkingLog 適用: 開発の計画と履歴は PLAN.md, WorkingLog.md に記録
+
+### 📝 実装前の確認
+実装を依頼された際は、以下のプロセスを必ず踏んでください：
+1. `.rules/` 3ファイルを確認
+2. 要件を SPEC.md/BLUEPRINT.md と照合
+3. PLAN.md にタスクを列挙して確認
+4. 実装・テスト → `task check` 合格
+5. WorkingLog.md に記録
+
+### ❓ なぜこの構造？
+以前は思想・ルール・実践が混在しており、AIエージェントが判断に迷うケースがありました。
+`.rules/` を作成し、哲学（なぜ）・ルール（どうやって）・思想（どのような）を分離することで、一貫性ある判断を担保しています。
+
+---
+
 ## ドキュメントファイル
 
 ### 開発用ドキュメント

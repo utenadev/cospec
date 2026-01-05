@@ -113,6 +113,33 @@ cd cospec
 task setup
 ```
 
+### Getting Started
+
+本プロジェクトは「Codebase as Context」哲学に基づくHuman-AI協働開発を行います。
+初見の開発者やAIエージェントは、以下の**必須ガイド**を先にお読みください。
+
+#### For New Developers & First-Time AI Agents
+
+**Required Reading:** `.rules/` ディレクトリ以下の3ファイルを**必ず読んでください**。
+These are the **sole reference** for all development decisions：
+
+1. **[`.rules/OverviewDesignThinking.md`](./.rules/OverviewDesignThinking.md)** - 設計思想（**Why** the rules exist）
+2. **[`.rules/OverviewBasicRule.md`](./.rules/OverviewBasicRule.md)** - 実践ルール（**How** to develop）
+3. **[`.rules/OverviewCodingTestingThinking.md`](./.rules/OverviewCodingTestingThinking.md)** - コーディング思想（**What** kind of code to write）
+
+**Development Process:**
+1. Read `.rules/` 3 files
+2. Match requirements against SPEC.md/BLUEPRINT.md
+3. List tasks in PLAN.md and confirm
+4. Implement & test → Pass `task check`
+5. Record in WorkingLog.md
+
+**Why This Structure?**
+Previously, philosophy, rules, and practices were mixed in overview files, causing confusion.
+By creating `.rules/` and separating philosophy (why), rules (how), and guidelines (what), we ensure consistent decision-making.
+
+---
+
 ### Usage
 
 #### 1. Initialize a Project

@@ -2,6 +2,18 @@
 
 This file provides context and guidelines for AI agents working on the `cospec` project.
 
+**Must Read:** 本プロジェクトで開発を行う前に、以下のガイドを必ず読んでください。
+
+### ✅ 必須ガイド
+開発判断の**唯一の根拠**となるガイドライン：
+1. **`.rules/OverviewDesignThinking.md`**: 設計思想（**なぜ**このルールがあるのか）
+2. **`.rules/OverviewBasicRule.md`**: 実践ルール（**どうやって**開発するか）
+3. **`.rules/OverviewCodingTestingThinking.md`**: コーディング思想（**どのような**コードを書くか）
+
+**思想 → 実践の順で読む**: 必ず OverviewDesignThinking で「なぜ」を理解してから、OverviewBasicRule で「どうやって」を確認
+
+---
+
 ## 1. Project Overview
 **Name:** `cospec`
 **Purpose:** A CLI platform designed to facilitate high-quality software development through collaboration between humans and AI agents.

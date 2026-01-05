@@ -121,6 +121,13 @@ tasks:
 
     console.print(f"\n[bold]Done![/bold] Created {created_count} files, skipped {skipped_count} files.")
 
+    console.print("\n[bold green]✅ Required Reading for AI Agents[/bold green]")
+    console.print("Before starting any development work in this project, read these 3 guides:")
+    console.print("1. [bold].rules/OverviewDesignThinking.md[/bold] - Design philosophy (Why)")
+    console.print("2. [bold].rules/OverviewBasicRule.md[/bold] - Practice workflows (How)")
+    console.print("3. [bold].rules/OverviewCodingTestingThinking.md[/bold] - Coding principles (What)")
+    console.print("\n[italic]These are the sole references for all development decisions.[/italic]")
+
 
 @app.command()
 def status() -> None:
