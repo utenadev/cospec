@@ -154,8 +154,9 @@ cospec/
 
 - `docs/SPEC.md` - Functional requirements (the "What")
 - `docs/BLUEPRINT.md` - Technical architecture (the "How")
-- `docs/OverviewCodingTestingThinking.md` - Coding and testing guidelines
-- `docs/OverviewDesignThinking.md` - Design philosophy and patterns
+- `.rules/OverviewBasicRule.md` - Human-AI協働開発の実践ワークフロー
+- `.rules/OverviewCodingTestingThinking.md` - Coding and testing guidelines
+- `.rules/OverviewDesignThinking.md` - Design philosophy and patterns
 - `docs/PLAN.md` - Implementation checklists
 - `docs/WorkingLog.md` - Development history
 

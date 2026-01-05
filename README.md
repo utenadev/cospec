@@ -119,7 +119,7 @@ task setup
 ```bash
 cospec init
 ```
-This creates a `docs/` directory with templates for specifications and guidelines (`OverviewCodingTestingThinking.md`).
+This creates a `docs/` directory and `.rules/` directory with templates for specifications and guidelines (SPEC.md, BLUEPRINT.md, Overview*.md).
 
 #### 2. Clarify Ambiguous Requirements
 ```bash

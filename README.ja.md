@@ -144,7 +144,7 @@ source venv/bin/activate
 ```bash
 cospec init
 ```
-`docs/` ディレクトリと仕様・ガイドラインのテンプレートファイル（SPEC.md, OverviewCodingTestingThinking.md 等）を作成します。
+`docs/` ディレクトリと `.rules/` ディレクトリを作成し、仕様・ガイドラインのテンプレートファイル（SPEC.md, BLUEPRINT.md, Overview*.md 等）を生成します。
 
 #### 2. ヒアリングによる仕様明確化
 
@@ -224,7 +224,8 @@ cospec agent test MistralVibe
 
 ## 開発について
 
-詳細な仕様については [docs/](./docs/) を、開発ガイドラインについては [docs/OverviewCodingTestingThinking.md](./docs/OverviewCodingTestingThinking.md) をご覧ください。
+詳細な仕様については [docs/](./docs/) を、開発ガイドラインについては [.rules/](./.rules/) ディレクトリの Overview*.md ファイルをご覧ください。
+
 
 ```bash
 # すべてのチェックを実行（lint + type-check + test + docs:check）
@@ -255,8 +256,9 @@ task type-check            # 型チェック（mypy）
 - [docs/CLAUDE_DIARY.md](./docs/CLAUDE_DIARY.md): 開発日誌（技術的判断と学び）
 
 ### ガイドライン
-- [docs/OverviewDesignThinking.md](./docs/OverviewDesignThinking.md): 設計思考ガイドライン
-- [docs/OverviewCodingTestingThinking.md](./docs/OverviewCodingTestingThinking.md): コーディングとテストガイドライン
+- [.rules/OverviewDesignThinking.md](./.rules/OverviewDesignThinking.md): 設計思考ガイドライン（思想・哲学）
+- [.rules/OverviewBasicRule.md](./.rules/OverviewBasicRule.md): Human-AI協働開発の実践ワークフロー
+- [.rules/OverviewCodingTestingThinking.md](./.rules/OverviewCodingTestingThinking.md): コーディングとテストガイドライン
 
 ### プロジェクト仕様
 - [docs/SPEC.md](./docs/SPEC.md): プロジェクト固有の機能要件
