@@ -1,5 +1,38 @@
 # 実装計画 (Implementation Plan)
 
+## 2026-01-05 ドキュメント構造の整理・Overviewファイル分割
+
+### 背景
+docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と OverviewCodingTestingThinking.md に開発プロセス・ワークフローが混在して参照しにくかったため分割を検討。
+
+### 計画
+- [x] **ディレクトリ構造の整理**
+  - [x] `.rules/` ディレクトリを新規作成（ガイドライン・思想ファイル）
+  - [x] `docs/diary/` ディレクトリ作成（AIエージェントの作業ログ）
+  - [x] `docs/report/` ディレクトリ作成（コードレビューレポート）
+- [x] **ファイル分割・見直し**
+  - [x] `OverviewDesignThinking.md` から開発プロセス（セクション3）を削除
+  - [x] `OverviewCodingTestingThinking.md` からTaskfile/自動化（セクション3）を削除し、言語中立表現に修正
+  - [x] `OverviewBasicRule.md` を新規作成（13K, 277行）
+    - [x] 第1章: Human-AI協働のフロー設計（考え方）
+    - [x] 第2章: go-task/Taskfile.yml開発インターフェース統一
+    - [x] 第3章: PLAN.md / WorkingLog.md 実装計画
+    - [x] 第4章: QAヒアリング → TDG実行 実践ワークフロー
+- [x] **ファイル移動**
+  - [x] Overview*ファイルを `.rules/` へ移動
+  - [x] ダイアリー3件を `docs/diary/` へ移動
+  - [x] レビューレポート6件を `docs/report/` へ移動
+  - [x] 空のレビューファイル3件を削除
+- [x] **参照更新**
+  - [x] CLAUDE.md のガイドライン一覧を更新
+  - [x] README.ja.md の3箇所の参照を修正
+  - [x] README.md の1箇所を修正
+  - [x] HISTORY_CONTEXT.md に BasicRule.md を追記
+- [x] **Gitコミット**
+  - [x] 全変更をステージング
+  - [x] コミット作成: refactor: reorganize documentation structure and split Overview files
+  - [x] リモートへプッシュ
+
 ## 2026-01-04 レビュー指摘事項への対応
 - [x] **ドキュメント内のディレクトリ構造修正**
     - `docs/BLUEPRINT.md` を更新し、`src/cospec` レイアウトを反映。

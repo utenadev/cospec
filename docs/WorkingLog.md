@@ -1,5 +1,75 @@
 # 作業ログ (Working Log): cospec
 
+## 2026-01-05 ドキュメント構造の整理・Overviewファイル分割
+
+### 背景・動機
+当初、`docs/` ディレクトリ配下にすべてのドキュメントがフラットに配置されていたが、以下の課題が生じた:
+- Overviewファイル（設計思想・開発ガイドライン）に開発プロセスとワークフローが混在し、参照性が悪い
+- AIレビューレポート（6ファイル）とダイアリー（3ファイル、合計約32K）が docs/ 直下に散乱
+- 空のレビューファイル（3ファイル）が残っている
+
+### 実施内容
+
+#### 新しいディレクトリ構造の確立
+- **`.rules/`**: ガイドライン・思想ファイルの専用ディレクトリ
+  - プロジェクトのルート直下に配置し、ドキュメントディレクトリの煩雑さを解消
+- **`docs/diary/`**: AIエージェントの作業ログ（CLAUDE_DIARY.md, GEMINI_DIARY.md, OPENCODE_DIARY.md）
+- **`docs/report/`**: コードレビューレポート（2026-01-04の6件）
+- 不要ファイル削除: 空のレビューファイル3件（232706_opencode.md, 233009_opencode.md, 233113_qwen.md）
+
+#### Overview*ファイルの分割と再編成
+- **`OverviewDesignThinking.md` の再編**（7.8K → 5.0K）
+  - セクション3「開発プロセス」を削除し、設計思想とプロジェクト拡張性のみに焦点化
+  - Codebase as Context 哲学と SPEC/BLUEPRINT の役割の明確化
+
+- **`OverviewCodingTestingThinking.md` の再編**（5.1K → 3.6K）
+  - セクション3「Taskfile自動化」を削除し、コーディング思想とテスト戦略に集中
+  - 言語中立化: Python固有表現（Docstring）を「ドキュメントコメント」に統一
+
+- **`OverviewBasicRule.md` の新規作成**（13K, 277行）
+  - Human-AI協働開発の実践ワークフローを網羅的に記載
+  - 第1章: Human-AI協働のためのフロー設計（考え方）
+  - 第2章: go-task/Taskfile.yml（開発インターフェース統一）
+  - 第3章: PLAN.md / WorkingLog.md（実装計画とタスク管理）
+  - 第4章: QAヒアリング → TDG実行（具体的な実践手順）
+  - 将来的な言語・フレームワーク拡張（Python CLI → Web Server, Go, TypeScript）も考慮
+
+#### 参照更新
+- **CLAUDE.md**: ガイドライン一覧に BasicRule.md を追加
+- **README.ja.md**: 3箇所（ガイドライン一覧、 `cospec init` 説明、開発ガイドリンク）
+- **README.md**: 1箇所（ `cospec init` の出力内容説明）
+- **HISTORY_CONTEXT.md**: ドキュメント一覧に BasicRule.md を追記
+
+### 判断・選択
+
+#### なぜ「.rules/」をプロジェクトルートに配置したか
+当初は `docs/.rules/` も検討したが、**「ドキュメントと思想・ルールの分離」** を明確にするために、プロジェクトルート直下に配置した。これにより:
+- AIエージェントが設計思想を理解したい → `.rules/` を見る
+- 開発履歴やレビューレポートを確認したい → `docs/` 配下を見る
+と役割が明確になり、参照が高速化される。
+
+#### なぜ BasicRule.md に実践手順を集約したか
+従来の Overview*ファイルでは、「TDGの思想（なぜ）」と「TDGのやり方（How）」が同じセクションに記載されていた。`OverviewBasicRule.md` という実践ガイドを独立させることで:
+- **設計思想**: OverviewDesign/CodingTesting *Thinking.md で **なぜ** を理解
+- **実践手順**: OverviewBasicRule.md で **どうやるか** を把握
+という関心の分離を実現し、開発者・AIエージェント双方の理解速度向上を図った。
+
+#### 空ファイル削除について
+3件の空レビューファイル（0バイトまたは397B）は、AIエージェントのエラーにより生成されたスタブと考えられたため、履歴としても価値が低いと判断し削除。レビュー内容が有効なファイルは `docs/report/` に維持。
+
+### Gitコミット
+- **コミット**: `refactor: reorganize documentation structure and split Overview files`
+- **コメント**: 🤖 Generated with Claude Code
+- **変更ファイル数**: 19ファイル
+- **変更内訳**: 新規作成2ファイル, リネーム11ファイル, 削除3ファイル, 修正4ファイル
+- **参照**: コミットハッシュ `e402636`
+
+### 参照
+- PLAN.md: 2026-01-05ドキュメント構造の整理・Overviewファイル分割
+- OverviewBasicRule.md: 第3章「実装計画とタスク管理（PLAN.md / WorkingLog.md）」
+
+---
+
 ## 2026-01-04 AI-Agent追加機能の実装
 
 ### ドキュメント更新
