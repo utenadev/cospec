@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from cospec.agents.base import BaseAgent
 from cospec.core.analyzer import ProjectAnalyzer
@@ -13,7 +13,7 @@ class HearerAgent(BaseAgent):
 
     def extract_unclear_points(self, spec_content: str) -> List[str]:
         """
-        SPEC.md から不明点を抽出するロジック
+        SPEC.md から不明点を抽出するロジック（ヒント用）
         """
         unclear_points = []
 
@@ -47,59 +47,32 @@ class HearerAgent(BaseAgent):
 
         return unclear_points
 
-    def generate_interactive_questions(self, unclear_points: List[str]) -> str:
+    def create_mission_prompt(self) -> str:
         """
-        不明点からインタラクティブな質問を生成
+        AIエージェント向けの指令プロンプトを生成する
         """
-        questions = []
-        for i, point in enumerate(unclear_points, 1):
-            questions.append(f"{i}. {point} について、具体的な要件を教えてください。")
-
-        return "\n".join(questions)
-
-    def hear_requirements(self) -> Dict[str, Any]:
-        """
-        要件の曖昧さをAIが人間にヒアリングし、SPEC.mdを洗練させる
-        """
-        # SPEC.md から不明点を抽出
         spec_path = Path("docs/SPEC.md")
         if not spec_path.exists():
-            return {"status": "error", "message": "SPEC.md ファイルが見つかりません"}
+            return "Error: docs/SPEC.md が見つかりません。まずは `cospec init` を実行してください。"
 
         spec_content = spec_path.read_text(encoding="utf-8")
         unclear_points = self.extract_unclear_points(spec_content)
 
-        if not unclear_points:
-            return {"status": "success", "message": "SPEC.md に不明点が見つかりませんでした", "questions": []}
+        hint_text = ""
+        if unclear_points:
+            hint_text = "\n".join([f"- {p}" for p in unclear_points])
+        else:
+            hint_text = "- (正規表現による明示的な不明点は検出されませんでした。全文を精査してください)"
 
-        # 質問を生成
-        questions = self.generate_interactive_questions(unclear_points)
+        # テンプレート読み込み
+        # Note: パッケージ化された際のパス解決は別途考慮が必要だが、現状は相対パスで処理
+        template_path = Path("src/cospec/prompts/hearer.md")
+        if not template_path.exists():
+            # フォールバック: パッケージルートからの相対パスで再試行
+            template_path = Path(__file__).parent.parent / "prompts" / "hearer.md"
 
-        # AI に質問内容を提示し、回答を生成させる
-        prompt = f"""以下の不明点について、ユーザーにインタラクティブに質問してください。
+        if not template_path.exists():
+            return "Error: Prompt template (src/cospec/prompts/hearer.md) not found."
 
-不明点:
-{chr(10).join(unclear_points)}
-
-質問例:
-{questions}
-
-ユーザーの回答を基に、SPEC.md の改善案を提案してください。
-"""
-
-        try:
-            response = self.run_tool(prompt)
-            return {
-                "status": "success",
-                "message": "ヒアリングが完了しました",
-                "questions": questions,
-                "ai_response": response,
-                "unclear_points": unclear_points,
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"ヒアリング中にエラーが発生しました: {str(e)}",
-                "questions": questions,
-                "unclear_points": unclear_points,
-            }
+        template = template_path.read_text(encoding="utf-8")
+        return template.replace("{unclear_points_hint}", hint_text)

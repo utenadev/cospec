@@ -71,117 +71,70 @@ class TestHearerAgent:
         assert "エラー処理 '未定義のエラー処理' の詳細が不明です" in unclear_points
         assert "エラー処理 '不明な例外処理' の詳細が不明です" in unclear_points
 
-    def test_generate_interactive_questions(self):
-        """インタラクティブな質問を正しく生成できる"""
-        agent = HearerAgent(self.config)
-
-        unclear_points = ["条件 '不明な条件' の詳細が不明です", "引数 '--input' の必須/任意の判断基準が不明です"]
-
-        questions = agent.generate_interactive_questions(unclear_points)
-
-        assert "1. 条件 '不明な条件' の詳細が不明です について、具体的な要件を教えてください。" in questions
-        assert "2. 引数 '--input' の必須/任意の判断基準が不明です について、具体的な要件を教えてください。" in questions
-
     @patch("cospec.agents.hearer.Path")
-    def test_hear_requirements_spec_not_found(self, mock_path):
+    def test_create_mission_prompt_spec_not_found(self, mock_path):
         """SPEC.md が存在しない場合のエラーハンドリング"""
         # SPEC.md が存在しない設定
         mock_path_instance = Mock()
         mock_path.return_value = mock_path_instance
-        mock_path_instance.exists.return_value = False
+        # 最初の呼び出し(SPEC.md)でFalseを返す
+        mock_path_instance.exists.side_effect = [False]
 
         agent = HearerAgent(self.config)
+        prompt = agent.create_mission_prompt()
 
-        result = agent.hear_requirements()
-
-        assert result["status"] == "error"
-        assert "SPEC.md ファイルが見つかりません" in result["message"]
+        assert "Error: docs/SPEC.md が見つかりません" in prompt
 
     @patch("cospec.agents.hearer.Path")
-    @patch("cospec.agents.hearer.ProjectAnalyzer")
-    def test_hear_requirements_no_unclear_points(self, mock_analyzer, mock_path):
-        """不明点がない場合の正常終了"""
-        # SPEC.md が存在し、内容がある設定
-        mock_path_instance = Mock()
-        mock_path.return_value = mock_path_instance
-        mock_path_instance.exists.return_value = True
-        mock_path_instance.read_text.return_value = """
+    def test_create_mission_prompt_no_unclear_points(self, mock_path):
+        """不明点がない場合のプロンプト生成"""
+        mock_spec_path = Mock()
+        mock_spec_path.exists.return_value = True
+        mock_spec_path.read_text.return_value = """
         ## FR-001: テスト機能
-
-        ### 概要
         明確なテスト機能
-
-        ### ユーザー入力
-        - 引数: --required (必須)
-
-        ### 期待される挙動
-        - 成功時: 正常に処理
         """
 
+        mock_template_path = Mock()
+        mock_template_path.exists.return_value = True
+        mock_template_path.read_text.return_value = "Prompt Template: {unclear_points_hint}"
+
+        # Path(...) の呼び出し順序に応じてモックを返す
+        def side_effect(path):
+            if str(path) == "docs/SPEC.md":
+                return mock_spec_path
+            return mock_template_path
+
+        mock_path.side_effect = side_effect
+
         agent = HearerAgent(self.config)
+        prompt = agent.create_mission_prompt()
 
-        result = agent.hear_requirements()
-
-        assert result["status"] == "success"
-        assert "不明点が見つかりませんでした" in result["message"]
-        assert result["questions"] == []
+        assert "Prompt Template:" in prompt
+        assert "(正規表現による明示的な不明点は検出されませんでした" in prompt
 
     @patch("cospec.agents.hearer.Path")
-    @patch("cospec.agents.hearer.ProjectAnalyzer")
-    def test_hear_requirements_with_unclear_points(self, mock_analyzer, mock_path):
-        """不明点がある場合の正常処理"""
-        # SPEC.md が存在し、不明点がある設定
-        mock_path_instance = Mock()
-        mock_path.return_value = mock_path_instance
-        mock_path_instance.exists.return_value = True
-        mock_path_instance.read_text.return_value = """
-        ## FR-001: テスト機能
-
-        ### 概要
-        不明なテスト機能
-
-        ### ユーザー入力
-        - 引数: --input (任意)
+    def test_create_mission_prompt_with_unclear_points(self, mock_path):
+        """不明点がある場合のプロンプト生成"""
+        mock_spec_path = Mock()
+        mock_spec_path.exists.return_value = True
+        mock_spec_path.read_text.return_value = """
         - 時点: 条件が不明
         """
 
-        # HearerAgent の run_tool メソッドをモック
+        mock_template_path = Mock()
+        mock_template_path.exists.return_value = True
+        mock_template_path.read_text.return_value = "Prompt Template: {unclear_points_hint}"
+
+        def side_effect(path):
+            if str(path) == "docs/SPEC.md":
+                return mock_spec_path
+            return mock_template_path
+
+        mock_path.side_effect = side_effect
+
         agent = HearerAgent(self.config)
-        agent.run_tool = Mock(return_value="AIの回答")
+        prompt = agent.create_mission_prompt()
 
-        result = agent.hear_requirements()
-
-        assert result["status"] == "success"
-        assert "ヒアリングが完了しました" in result["message"]
-        assert len(result["questions"]) > 0
-        assert "ai_response" in result
-        assert result["ai_response"] == "AIの回答"
-
-    @patch("cospec.agents.hearer.Path")
-    @patch("cospec.agents.hearer.ProjectAnalyzer")
-    def test_hear_requirements_tool_error(self, mock_analyzer, mock_path):
-        """外部ツール実行時のエラー処理"""
-        # SPEC.md が存在し、不明点がある設定
-        mock_path_instance = Mock()
-        mock_path.return_value = mock_path_instance
-        mock_path_instance.exists.return_value = True
-        mock_path_instance.read_text.return_value = """
-        ## FR-001: テスト機能
-
-        ### 概要
-        不明なテスト機能
-
-        ### ユーザー入力
-        - 引数: --input (任意)
-        """
-
-        # HearerAgent の run_tool メソッドをエラーにする
-        agent = HearerAgent(self.config)
-        agent.run_tool = Mock(side_effect=Exception("ツール実行エラー"))
-
-        result = agent.hear_requirements()
-
-        assert result["status"] == "error"
-        assert "ツール実行エラー" in result["message"]
-        assert len(result["questions"]) > 0
-        assert "unclear_points" in result
+        assert "Prompt Template:" in prompt
+        assert "- 条件 '条件が不明' の詳細が不明です" in prompt

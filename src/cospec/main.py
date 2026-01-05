@@ -191,47 +191,39 @@ def review(tool: Optional[str] = typer.Option(None, help="Tool to use (qwen, ope
 
 
 @app.command()
-def hear(tool: Optional[str] = None, output: Optional[Path] = None) -> None:
+def hear(output: Optional[Path] = None) -> None:
     """
-    Conduct interactive hearing to clarify ambiguous requirements in SPEC.md.
+    Generate a mission prompt for an AI agent to conduct a hearing.
+
+    This command outputs a system prompt that you can feed to an AI agent (like Gemini, Claude).
+    The agent will then interactively help you clarify ambiguous requirements in SPEC.md
+    by reading the file and asking you questions with options (Pros/Cons).
     """
-    console.print("[bold blue]Conducting interactive hearing...[/bold blue]")
+    console.print("[bold blue]Generating mission prompt for AI Agent...[/bold blue]")
 
     try:
         # 1. Load Config
         config = load_config()
 
-        # 2. Select tool
-        tool_name = tool or config.select_tool_for_development()
+        # 2. Initialize Agent (Tool name is irrelevant for prompt generation)
+        agent = HearerAgent(config)
 
-        # 3. Initialize Agent
-        agent = HearerAgent(config, tool_name=tool_name)
+        # 3. Generate Prompt
+        prompt = agent.create_mission_prompt()
 
-        console.print(f"Running {agent.tool_name} (Language: {config.language})...")
-
-        # 2. Conduct Hearing
-        result = agent.hear_requirements()
-
-        if result["status"] == "error":
-            console.print(f"[red]Error:[/red] {result['message']}")
+        if prompt.startswith("Error:"):
+            console.print(f"[red]{prompt}[/red]")
             raise typer.Exit(code=1)
 
-        # 3. Display Results
-        console.print("[green]Hearing complete![/green]")
-
-        if result["questions"]:
-            console.print("\n[bold]Generated Questions:[/bold]")
-            for question in result["questions"]:
-                console.print(f"  • {question}")
-
-        if "ai_response" in result:
-            console.print("\n[bold]AI Response:[/bold]")
-            console.print(result["ai_response"])
-
-        # 4. Save Results
+        # 4. Output Result
         if output:
-            output.write_text(str(result), encoding="utf-8")
-            console.print(f"[green]Results saved to:[/green] {output}")
+            output.write_text(prompt, encoding="utf-8")
+            console.print(f"[green]Mission prompt saved to:[/green] {output}")
+        else:
+            console.print("\n[bold]--- Mission Prompt (Copy & Paste to AI Agent) ---[/bold]\n")
+            print(prompt)
+            console.print("\n[bold]--------------------------------------------------[/bold]")
+            console.print("[italic]Tip: Paste this prompt to your AI assistant to start the hearing session.[/italic]")
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
