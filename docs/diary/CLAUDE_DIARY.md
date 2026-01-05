@@ -1,5 +1,93 @@
 # CLAUDE Diary: cospec Development Log
 
+## 2026-01-05 Documentation Structure Reorganization
+
+### Overview File Split and First-time AI Agent Guide Enhancement
+
+**Work Summary**:
+- Reorganized the documentation structure that had become cluttered
+- Split `OverviewDesignThinking.md` and `OverviewCodingTestingThinking.md` into philosophy and practice components
+- Created new `OverviewBasicRule.md` consolidating practical workflows
+- Enhanced README.md and README.ja.md with first-time AI agent guide sections
+- Maintained Git traceability by updating `PLAN.md` and `WorkingLog.md` retroactively
+- Improved `cospec init` to prompt required reading
+- Created `QWEN.md` for Qwen AI agents
+
+#### New Directory Structure Established
+
+**`.rules/` directory** (Project root):
+- `OverviewDesignThinking.md`: Design philosophy and expansion (5.0K, 96 lines)
+- `OverviewCodingTestingThinking.md`: Coding/testing philosophy in a language-neutral way (3.6K, 64 lines)
+- `OverviewBasicRule.md`: Practical workflow compilation (13K, 277 lines)
+
+**`docs/` directory reorganization**:
+- `docs/diary/`: AI agent work logs (CLAUDE, GEMINI, OPENCODE)
+- `docs/report/`: Code review reports (6 files with valid content)
+- Removed 3 empty review stub files
+
+#### File Split Methodology
+
+**OverviewDesignThinking.md** (7.8K → 5.0K):
+- Removed Section 3 (development process/self-logging)
+- Kept: Core philosophy, SPEC/BLUEPRINT roles, project scalability phases
+- Focused purely on "Why" - the philosophical foundation
+
+**OverviewCodingTestingThinking.md** (5.1K → 3.6K):
+- Removed Section 3 (Taskfile standardization)
+- Updated Section 1 to be language-neutral (Docstring → Documentation Comments)
+- Kept: Strong typing principles, TDG objectives, technical stack guidelines
+- Added reference to `OverviewBasicRule.md` for practical TDG cycle details
+
+**OverviewBasicRule.md (New)**:
+- Chapter 1: Human-AI Collaboration Flow Design (philosophy)
+- Chapter 2: go-task/Taskfile.yml Development Interface Unification
+- Chapter 3: PLAN.md / WorkingLog.md Implementation Planning
+- Chapter 4: QA Hearing → TDG Execution Practical Workflow
+- Clear step-by-step procedures for AI agents
+
+#### Content Enhancement
+
+**README.ja.md & README.md**:
+- Added comprehensive first-time AI agent guide at the top
+- Clearly states 3 required overview files as sole development references
+- Documents philosophy → practice reading order
+- Includes pre-implementation checklist (5 steps)
+
+**AI Agent Guides**:
+- `CLAUDE.md`: Added "Must Read" section at the top
+- `GEMINI.md`: Added "Must Read" section, user expanded with Current Status section
+- `QWEN.md`: Created from scratch with full agent context
+
+**cospec init command enhancement**:
+- Now displays required reading prompt after file creation
+- Guides AI agents to read `.rules/Overview*.md` files immediately
+
+#### Commit History
+- `e402636`: Initial reorganization and file split
+- `f66a7e4`: PLAN.md and WorkingLog.md update with detailed rationale
+- `41cf0c9`: First-time AI agent guide enhancement (README + agent files + init prompt)
+
+#### Rationale Documentation
+
+**Why `.rules/` at root level?**
+Had considered `docs/.rules/`, but chose root for **clear separation of documentation from philosophy/rules**:
+- AI agents seeking design philosophy → Look at `.rules/`
+- Reviewing development history/reports → Look at `docs/` substructures
+
+**Why consolidate practices in BasicRule.md?**
+Previously, "TDG philosophy" and "TDG how-to" were in the same sections, causing confusion.
+By creating a dedicated practical guide:
+- **Design Philosophy**: Understand "Why" from OverviewDesign/CodingTesting *Thinking.md
+- **Practical Procedures**: Learn "How" from OverviewBasicRule.md
+Achieves separation of concerns, accelerating understanding for both AI agents and developers.
+
+#### Future Benefits
+- **Consistent onboarding**: First-time AI agents immediately understand project rules
+- **Scalable structure**: Language/framework-specific guides can be added as separate files
+- **Maintains philosophy**: Core thinking stays separate from evolving practices
+
+---
+
 ## 2026-01-04
 
 ### Taskfile.yml 拡張と実装計画作成

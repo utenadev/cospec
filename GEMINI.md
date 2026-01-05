@@ -22,12 +22,13 @@ This file provides context and guidelines for AI agents working on the `cospec` 
 *   **Consistency First:** Eliminate discrepancies between docs and code before implementation.
 *   **Decision Support:** AI provides options with Pros/Cons to support human decision-making.
 
-## 2. Current Status (Inception Phase)
-*   **Documentation:** Comprehensive specifications and architectural blueprints exist in `docs/`.
-*   **Source Code:** **Not yet implemented.** The directory structure for the source code (e.g., `cospec/`, `src/`) is currently missing.
-*   **Automation:** A `Taskfile.yml` exists but appears to be a template or legacy artifact referencing `llminfo_cli`. It needs to be updated to match the `cospec` project name and structure.
+## 2. Current Status (Implementation Phase)
+*   **CLI Core:** Core commands (`init`, `status`, `review`, `hear`, `test-gen`, `agent`) are implemented using Typer and Rich.
+*   **Documentation:** Specifications (`SPEC.md`) and architectural blueprints (`BLUEPRINT.md`) are the ground truth for development.
+*   **Agents:** Initial implementation of `ReviewerAgent`, `HearerAgent`, and `TestGeneratorAgent` exists in `src/cospec/agents/`.
+*   **Automation:** `Taskfile.yml` is fully functional for setup, testing, linting, and quality checks.
 
-## 3. Architecture & Tech Stack (Planned)
+## 3. Architecture & Tech Stack
 Based on `docs/BLUEPRINT.md`:
 *   **Language:** Python
 *   **CLI Framework:** `Typer`
@@ -36,7 +37,7 @@ Based on `docs/BLUEPRINT.md`:
 *   **Task Runner:** `go-task`
 
 ## 4. Development Guidelines
-Adhere strictly to `docs/OverviewCodingTestingThinking.md`:
+Adhere strictly to `.rules/OverviewCodingTestingThinking.md`:
 
 ### Coding Standards ("Guardrails for AI")
 *   **Strong Typing:** Use `Pydantic` for data structures. Avoid `Any`.
@@ -56,20 +57,25 @@ The project uses `go-task` as the unified interface.
 *   `task lint`: Run linters (ruff, mypy).
 *   `task check`: **Mandatory pre-commit check** (Lint + Type Check + Test).
 
-**Note:** The current `Taskfile.yml` requires updates to point to the correct `cospec` module instead of `llminfo_cli`.
-
 ## 6. Project Structure
 ```
 cospec/
 ├── docs/                  # Specifications & Thinking models (Ground Truth)
 │   ├── SPEC.md            # Functional Requirements
 │   ├── BLUEPRINT.md       # Architecture & Tech Stack
-│   └── Overview*.md       # Coding & Design Guidelines
-├── Taskfile.yml           # Task definitions (needs update)
-├── GEMINI.md              # Agent Context (This file)
-└── [Pending] cospec/      # Source code (to be created)
+│   └── PLAN.md            # Current implementation plan
+├── .rules/                # Project rules and guidelines
+├── src/                   # Source code
+│   └── cospec/
+│       ├── agents/        # Agent logic
+│       ├── core/          # Core utilities (config, analyzer)
+│       └── main.py        # CLI entry point
+├── tests/                 # Unit and integration tests
+├── Taskfile.yml           # Task definitions
+└── GEMINI.md              # Agent Context (This file)
+```
 
-## 6. Language Policy
+## 7. Language Policy
 - **User communication**: Japanese
 - **Code comments**: English
 - **Commit messages**: English
