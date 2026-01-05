@@ -1,4 +1,5 @@
 import subprocess
+from pathlib import Path
 from typing import Optional
 
 from cospec.core.config import CospecConfig, ToolConfig
@@ -41,10 +42,14 @@ class BaseAgent:
         has_file_placeholder = any("{file}" in arg for arg in self.tool_config.args)
         has_prompt_placeholder = any("{prompt}" in arg for arg in self.tool_config.args)
 
+        # Prepare local cache directory for temp files
+        cache_dir = Path.cwd() / ".cospec" / "cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+
         temp_file = None
 
         if has_file_placeholder and "{prompt}" in str(self.tool_config.args):
-            with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt") as f:
+            with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt", dir=cache_dir) as f:
                 f.write(full_prompt)
                 temp_file = f.name
 
@@ -58,7 +63,7 @@ class BaseAgent:
 
         elif has_prompt_placeholder:
             if len(full_prompt) > 8000:
-                with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt") as f:
+                with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt", dir=cache_dir) as f:
                     f.write(full_prompt)
                     temp_file = f.name
 

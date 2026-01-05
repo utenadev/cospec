@@ -35,12 +35,6 @@
       "args": [
         "{prompt}"
       ]
-    },
-    "mycli": {
-      "command": "mycli",
-      "args": [
-        "{prompt}"
-      ]
     }
   }
 }

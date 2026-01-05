@@ -96,4 +96,11 @@ task test
 - [docs/PLAN.md](./docs/PLAN.md): Implementation plans
 - [docs/WorkingLog.md](./docs/WorkingLog.md): Development history
 
+## 8. Language Policy
+
+- ユーザーとの会話：日本語
+- ソースコードのコメントとドキュメント：英語
+- コミットメッセージ：英語（コードベースとの一貫性維持のため）
+- ドキュメント（docs/以下の*.md）：既に日本語のものは引き続き日本語で記述
+
 ---
