@@ -102,10 +102,10 @@ tasks:
   quality:check:
     desc: Comprehensive quality check
     cmds:
-      - 'task: lint'
-      - 'task: type-check'
-      - 'task: test'
-      - 'task: docs:check'
+      - task: lint
+      - task: type-check
+      - task: test
+      - task: docs:check
 
   build:package:
     desc: Build package distribution
@@ -116,9 +116,9 @@ tasks:
   check:
     desc: Run all checks (lint, type-check, test)
     cmds:
-      - 'task: lint'
-      - 'task: type-check'
-      - 'task: test'
+      - task: lint
+      - task: type-check
+      - task: test
 
   clean:
     desc: Clean up temporary files

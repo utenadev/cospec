@@ -1,5 +1,14 @@
 # 実装計画 (Implementation Plan)
 
+## 2026-01-05 CLI UX改善
+
+### 実施済み
+- [x] **CLI引数なし実行時の挙動改善**
+  - [x] `main.py` の `Typer` 初期化時に `no_args_is_help=True` を追加
+  - [x] `cospec` および `cospec agent` コマンドで引数なし実行時にヘルプが表示されることを確認
+- [x] **Taskfile.yml の修正**
+  - [x] `task check` 等で内部タスク呼び出しが失敗する問題を修正（文字列指定からYAMLオブジェクトへ変更）
+
 ## 2026-01-05 ドキュメント構造の整理・Overviewファイル分割
 
 ### 背景

@@ -32,8 +32,8 @@ def _analyze_help_output(help_output: str, command: str) -> list[str]:
     return args
 
 
-app = typer.Typer(help="cospec: Collaborative Specification CLI")
-agent_app = typer.Typer(help="Manage AI-Agent configurations")
+app = typer.Typer(help="cospec: Collaborative Specification CLI", no_args_is_help=True)
+agent_app = typer.Typer(help="Manage AI-Agent configurations", no_args_is_help=True)
 app.add_typer(agent_app, name="agent")
 console = Console()
 

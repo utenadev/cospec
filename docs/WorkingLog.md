@@ -1,5 +1,23 @@
 # 作業ログ (Working Log): cospec
 
+## 2026-01-05 CLI UX改善
+
+### 実施内容
+- **CLI引数なし実行時の挙動改善**:
+  - `cospec` コマンドを引数なしで実行した際にエラー（Missing command）になる問題を修正。
+  - `typer.Typer(no_args_is_help=True)` を設定し、ヘルプメッセージが表示されるように変更。
+  - メインコマンド (`app`) と `agent` コマンド (`agent_app`) の両方に適用。
+
+- **Taskfile.yml の修正**:
+  - `task check` および `task quality:check` における内部タスク呼び出しの構文エラーを修正。
+  - 文字列指定（`'task: lint'`）からYAMLオブジェクト指定（`task: lint`）へ変更し、`go-task` が正しく解釈できるようにした。
+
+### 品質保証
+- `task check` を実行し、Lint, Type Check, Test がすべてパスすることを確認。
+
+### 参照
+- PLAN.md: 2026-01-05 CLI UX改善
+
 ## 2026-01-05 ドキュメント構造の整理・Overviewファイル分割
 
 ### 背景・動機
