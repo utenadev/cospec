@@ -109,18 +109,18 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
   - [ ] `task build:package`: パッケージビルドタスクの追加
 
 ### Phase 2: `cospec hear` コマンド実装
-- [ ] **HearerAgent の作成**
-  - [ ] `src/cospec/agents/hearer.py` を作成
-  - [ ] SPEC.md から不明点を抽出するロジックを実装
-  - [ ] インタラクティブな質問生成機能を実装
-- [ ] **CLI コマンドの統合**
-  - [ ] `main.py` に `hear` コマンドを追加
-  - [ ] 必要な引数とオプションを定義
-  - [ ] ヘルプメッセージを追加
-- [ ] **テストの実装**
-  - [ ] `tests/test_hear.py` を作成
-  - [ ] モックを使用した単体テストを実装
-  - [ ] 統合テストを追加
+- [x] **HearerAgent の作成**
+  - [x] `src/cospec/agents/hearer.py` を作成
+  - [x] SPEC.md から不明点を抽出するロジックを実装
+  - [x] インタラクティブな質問生成機能を実装
+- [x] **CLI コマンドの統合**
+  - [x] `main.py` に `hear` コマンドを追加
+  - [x] 必要な引数とオプションを定義
+  - [x] ヘルプメッセージを追加
+- [x] **テストの実装**
+  - [x] `tests/test_hear.py` を作成
+  - [x] モックを使用した単体テストを実装
+  - [x] 統合テストを追加
 
 ### Phase 3: `cospec test-gen` コマンド実装
 - [ ] **TestGeneratorAgent の作成**
