@@ -51,11 +51,12 @@ class HearerAgent(BaseAgent):
         """
         AIエージェント向けの指令プロンプトを生成する
         """
-        spec_path = Path("docs/SPEC.md")
-        if not spec_path.exists():
+        project_context = self.analyzer.collect_context()
+        spec_content = self.analyzer.get_spec_content()
+
+        if not spec_content:
             return "Error: docs/SPEC.md が見つかりません。まずは `cospec init` を実行してください。"
 
-        spec_content = spec_path.read_text(encoding="utf-8")
         unclear_points = self.extract_unclear_points(spec_content)
 
         hint_text = ""
@@ -65,14 +66,12 @@ class HearerAgent(BaseAgent):
             hint_text = "- (正規表現による明示的な不明点は検出されませんでした。全文を精査してください)"
 
         # テンプレート読み込み
-        # Note: パッケージ化された際のパス解決は別途考慮が必要だが、現状は相対パスで処理
-        template_path = Path("src/cospec/prompts/hearer.md")
-        if not template_path.exists():
-            # フォールバック: パッケージルートからの相対パスで再試行
-            template_path = Path(__file__).parent.parent / "prompts" / "hearer.md"
-
+        template_path = Path(__file__).parent.parent / "prompts" / "hearer.md"
         if not template_path.exists():
             return "Error: Prompt template (src/cospec/prompts/hearer.md) not found."
 
         template = template_path.read_text(encoding="utf-8")
-        return template.replace("{unclear_points_hint}", hint_text)
+        prompt = template.replace("{project_context}", project_context)
+        prompt = prompt.replace("{unclear_points_hint}", hint_text)
+
+        return prompt
