@@ -35,6 +35,19 @@
       "args": [
         "{prompt}"
       ]
+    },
+    "jules": {
+      "command": "gemini",
+      "args": [
+        "-p",
+        "/jules {prompt}"
+      ]
+    },
+    "mycli": {
+      "command": "mycli",
+      "args": [
+        "{prompt}"
+      ]
     }
   }
 }
