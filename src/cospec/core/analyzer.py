@@ -5,6 +5,15 @@ class ProjectAnalyzer:
     def __init__(self, root_dir: Path = Path(".")):
         self.root_dir = root_dir
 
+    def get_spec_content(self) -> str | None:
+        """
+        Reads and returns the content of docs/SPEC.md.
+        """
+        spec_path = self.root_dir / "docs" / "SPEC.md"
+        if spec_path.exists():
+            return spec_path.read_text(encoding="utf-8")
+        return None
+
     def collect_context(self) -> str:
         """
         Collects content from key files (docs and source) to form the context for the LLM.
