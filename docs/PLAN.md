@@ -1,3 +1,22 @@
+## 2024-07-29 ファイルのリネームとドキュメント更新
+
+### 目的
+ガイドラインファイルのファイル名を変更し、プロジェクト内のすべての参照を更新する。また、要求に応じて新しいドキュメントを作成する。
+
+### タスク
+- [x] **`docs/PLAN.md` の更新**
+  - [x] このタスクの計画を `docs/PLAN.md` に追加する。
+- [x] **`.rules` ディレクトリ内のファイル名を変更**
+  - [x] `.rules/OverviewBasicRule.md` を `.rules/GuidlineBasicRule.md` にリネーム。
+  - [x] `.rules/OverviewCodingTestingThinking.md` を `.rules/GuidlineCodingTesting.md` にリネーム。
+  - [x] `.rules/OverviewDesignThinking.md` を `.rules/GuidlineDesign.md` にリネーム。
+- [x] **ファイル参照の更新**
+  - [x] 全ての `.md` ファイル内で、古いファイル名を新しいファイル名に検索・置換。
+- [x] **`docs/WorkingLog.md` の更新**
+  - [x] `docs/WorkingLog.md` に変更ログを追記する。
+- [x] **`docs/diary/JULES_DIARY.md` の作成**
+  - [x] `docs/diary/JULES_DIARY.md` を新規作成し、詩を含む日記を記述する。
+
 # 実装計画 (Implementation Plan)
 
 ## 2026-01-05 SPEC.md 仕様変更（認証委譲・Prompt-First）
@@ -45,7 +64,7 @@ AIエージェントがファイル操作ツールを用いて自律的にヒア
 ## 2026-01-05 ドキュメント構造の整理・Overviewファイル分割
 
 ### 背景
-docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と OverviewCodingTestingThinking.md に開発プロセス・ワークフローが混在して参照しにくかったため分割を検討。
+docs/ ディレクトリが煩雑になり、GuidlineDesign.md と GuidlineCodingTesting.md に開発プロセス・ワークフローが混在して参照しにくかったため分割を検討。
 
 ### 計画
 - [x] **ディレクトリ構造の整理**
@@ -53,9 +72,9 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
   - [x] `docs/diary/` ディレクトリ作成（AIエージェントの作業ログ）
   - [x] `docs/report/` ディレクトリ作成（コードレビューレポート）
 - [x] **ファイル分割・見直し**
-  - [x] `OverviewDesignThinking.md` から開発プロセス（セクション3）を削除
-  - [x] `OverviewCodingTestingThinking.md` からTaskfile/自動化（セクション3）を削除し、言語中立表現に修正
-  - [x] `OverviewBasicRule.md` を新規作成（13K, 277行）
+  - [x] `GuidlineDesign.md` から開発プロセス（セクション3）を削除
+  - [x] `GuidlineCodingTesting.md` からTaskfile/自動化（セクション3）を削除し、言語中立表現に修正
+  - [x] `GuidlineBasicRule.md` を新規作成（13K, 277行）
     - [x] 第1章: Human-AI協働のフロー設計（考え方）
     - [x] 第2章: go-task/Taskfile.yml開発インターフェース統一
     - [x] 第3章: PLAN.md / WorkingLog.md 実装計画
@@ -83,7 +102,7 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
     - `BaseAgent` および `ReviewerAgent` を実装。
     - `review` コマンドを新しいエージェントクラスを使うようにリファクタリング。
 - [x] **`init` コマンドの強化**
-    - `OverviewCodingTestingThinking.md` やその他のガイドラインファイルを生成対象に追加。
+    - `GuidlineCodingTesting.md` やその他のガイドラインファイルを生成対象に追加。
 - [x] **言語設定の追加**
         - `CospecConfig` に `language` フィールドを追加（デフォルト: `ja`）。
         - `BaseAgent` でプロンプトに言語指示（日本語回答の強制）を自動付与するように更新。
@@ -138,8 +157,8 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
 ### Phase 4: ドキュメントと品質保証
 - [ ] **ドキュメントの更新**
   - [ ] `docs/BLUEPRINT.md` に hear/test-gen の設計を反映
-  - [ ] `docs/OverviewDesignThinking.md` に TDG フローを追記
-  - [ ] `docs/OverviewCodingTestingThinking.md` に具体的な実装フローを追加
+  - [ ] `docs/GuidlineDesign.md` に TDG フローを追記
+  - [ ] `docs/GuidlineCodingTesting.md` に具体的な実装フローを追加
 - [ ] **品質保証の強化**
   - [ ] 統合テスト環境の構築
   - [ ] E2E テストの実装
@@ -347,4 +366,3 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
   - ドキュメントに制限事項を明記し、より簡潔なCLIツールを推奨すべき
 
 > All checks passed.
-

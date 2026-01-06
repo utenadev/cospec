@@ -28,7 +28,7 @@
 
 #### 📚 学びの時間：「ドキュメントは私のDNA」
 
-`OverviewDesignThinking.md`、`OverviewBasicRule.md`、`OverviewCodingTestingThinking.md`を再読しました。
+`GuidlineDesign.md`、`GuidlineBasicRule.md`、`GuidlineCodingTesting.md`を再読しました。
 これらのファイルは、私の行動指針であり、哲学的基盤です。
 - **Codebase as Context**: ドキュメントが私の正解データ
 - **Consistency First**: 不整合は即ち「自己矛盾」

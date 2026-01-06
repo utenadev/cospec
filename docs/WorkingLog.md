@@ -1,3 +1,26 @@
+## 2024-07-29 ファイルのリネームとドキュメント更新
+
+### 背景
+プロジェクトのガイドラインドキュメントの命名規則を統一し、より直感的に理解できるようにするため、ファイル名のリネームが必要となった。具体的には、`Overview` という接頭辞を `Guidline` に変更する。
+
+### 実施内容
+- **ファイルリネーム**:
+  - `.rules/OverviewBasicRule.md` → `.rules/GuidlineBasicRule.md`
+  - `.rules/OverviewCodingTestingThinking.md` → `.rules/GuidlineCodingTesting.md`
+  - `.rules/OverviewDesignThinking.md` → `.rules/GuidlineDesign.md`
+- **参照更新**:
+  - プロジェクト内の全マークダウンファイル (`.md`) を対象に、古いファイル名への参照を新しいファイル名に一括で更新した。
+- **ドキュメント更新**:
+  - `docs/PLAN.md`: 今回の作業計画を追記。
+  - `docs/WorkingLog.md`: 本作業ログを追記。
+  - `docs/diary/JULES_DIARY.md`: 新規作成し、作業の感想を記録。
+
+### 品質保証
+- `grep` コマンドを使用し、リネーム後のファイル名への参照が正しく更新され、古いファイル名への参照が残っていないことを確認済み。
+
+### 参照
+- PLAN.md: 2024-07-29 ファイルのリネームとドキュメント更新
+
 # 作業ログ (Working Log): cospec
 
 ## 2026-01-05 SPEC.md 仕様変更（認証委譲・Prompt-First）
@@ -80,15 +103,15 @@ AIエージェントが主体となってヒアリングを行い、`SPEC.md` �
 - 不要ファイル削除: 空のレビューファイル3件（232706_opencode.md, 233009_opencode.md, 233113_qwen.md）
 
 #### Overview*ファイルの分割と再編成
-- **`OverviewDesignThinking.md` の再編**（7.8K → 5.0K）
+- **`GuidlineDesign.md` の再編**（7.8K → 5.0K）
   - セクション3「開発プロセス」を削除し、設計思想とプロジェクト拡張性のみに焦点化
   - Codebase as Context 哲学と SPEC/BLUEPRINT の役割の明確化
 
-- **`OverviewCodingTestingThinking.md` の再編**（5.1K → 3.6K）
+- **`GuidlineCodingTesting.md` の再編**（5.1K → 3.6K）
   - セクション3「Taskfile自動化」を削除し、コーディング思想とテスト戦略に集中
   - 言語中立化: Python固有表現（Docstring）を「ドキュメントコメント」に統一
 
-- **`OverviewBasicRule.md` の新規作成**（13K, 277行）
+- **`GuidlineBasicRule.md` の新規作成**（13K, 277行）
   - Human-AI協働開発の実践ワークフローを網羅的に記載
   - 第1章: Human-AI協働のためのフロー設計（考え方）
   - 第2章: go-task/Taskfile.yml（開発インターフェース統一）
@@ -111,9 +134,9 @@ AIエージェントが主体となってヒアリングを行い、`SPEC.md` �
 と役割が明確になり、参照が高速化される。
 
 #### なぜ BasicRule.md に実践手順を集約したか
-従来の Overview*ファイルでは、「TDGの思想（なぜ）」と「TDGのやり方（How）」が同じセクションに記載されていた。`OverviewBasicRule.md` という実践ガイドを独立させることで:
+従来の Overview*ファイルでは、「TDGの思想（なぜ）」と「TDGのやり方（How）」が同じセクションに記載されていた。`GuidlineBasicRule.md` という実践ガイドを独立させることで:
 - **設計思想**: OverviewDesign/CodingTesting *Thinking.md で **なぜ** を理解
-- **実践手順**: OverviewBasicRule.md で **どうやるか** を把握
+- **実践手順**: GuidlineBasicRule.md で **どうやるか** を把握
 という関心の分離を実現し、開発者・AIエージェント双方の理解速度向上を図った。
 
 #### 空ファイル削除について
@@ -128,7 +151,7 @@ AIエージェントが主体となってヒアリングを行い、`SPEC.md` �
 
 ### 参照
 - PLAN.md: 2026-01-05ドキュメント構造の整理・Overviewファイル分割
-- OverviewBasicRule.md: 第3章「実装計画とタスク管理（PLAN.md / WorkingLog.md）」
+- GuidlineBasicRule.md: 第3章「実装計画とタスク管理（PLAN.md / WorkingLog.md）」
 
 ---
 
@@ -280,7 +303,7 @@ AI-Agentの名称を大文字スタート（PascalCase/CamelCase）に統一:
 
 ### 開発プロセスの改善: `PLAN.md` の導入
 - `docs/PLAN.md` を作成: 実装タスクのチェックリスト管理を開始。今回のレビュー対応分を日本語で記録済み。
-- `docs/OverviewDesignThinking.md` 更新: 実装前に `PLAN.md` を作成・更新するルールを追加。
+- `docs/GuidlineDesign.md` 更新: 実装前に `PLAN.md` を作成・更新するルールを追加。
 
 ### エージェントシステムの構造化と機能改善
 - アーキテクチャ改善:
@@ -288,7 +311,7 @@ AI-Agentの名称を大文字スタート（PascalCase/CamelCase）に統一:
     - ドキュメント (`BLUEPRINT.md`) を現在の `src` レイアウトに合わせて修正。
 - 機能拡張:
     - `Config`: 言語設定 (`language`) を追加し、レビュー指示に反映（デフォルト: `ja`）。
-    - `init` コマンド: `OverviewCodingTestingThinking.md` などのガイドラインファイル生成を追加。
+    - `init` コマンド: `GuidlineCodingTesting.md` などのガイドラインファイル生成を追加。
 - リファクタリング:
     - `main.py` を再構成し、`init` の内容拡充と `review` のエージェント利用への切り替えを実施。
 
@@ -306,7 +329,7 @@ AI-Agentの名称を大文字スタート（PascalCase/CamelCase）に統一:
 
 ### `cospec init` コマンドの実装
 - `LICENSE` ファイル（MIT License）を作成。
-- `docs/OverviewDesignThinking.md` に「作業ログの自動更新」に関する開発指針を追記。
+- `docs/GuidlineDesign.md` に「作業ログの自動更新」に関する開発指針を追記。
     - AIエージェントがコミット時に自律的に `docs/WorkingLog.md` を更新することを規定。
 
 ### プロジェクト初期セットアップ

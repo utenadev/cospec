@@ -12,7 +12,7 @@
 
 ### FR-001: プロジェクト初期化 (`init`)
 - **機能**: 現在のディレクトリに `cospec` 推奨の構造（`docs/`, `Taskfile.yml`）を展開する。
-- **ガイドライン注入**: `OverviewDesignThinking.md` 等の「思想」ファイルを自動配置する。
+- **ガイドライン注入**: `GuidlineDesign.md` 等の「思想」ファイルを自動配置する。
 
 ### FR-002: 要件ヒアリング (`hear`)
 - **機能**: AIエージェントへの指令書（Mission Prompt）を生成する。

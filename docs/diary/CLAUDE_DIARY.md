@@ -38,8 +38,8 @@
 
 **Work Summary**:
 - Reorganized the documentation structure that had become cluttered
-- Split `OverviewDesignThinking.md` and `OverviewCodingTestingThinking.md` into philosophy and practice components
-- Created new `OverviewBasicRule.md` consolidating practical workflows
+- Split `GuidlineDesign.md` and `GuidlineCodingTesting.md` into philosophy and practice components
+- Created new `GuidlineBasicRule.md` consolidating practical workflows
 - Enhanced README.md and README.ja.md with first-time AI agent guide sections
 - Maintained Git traceability by updating `PLAN.md` and `WorkingLog.md` retroactively
 - Improved `cospec init` to prompt required reading
@@ -48,9 +48,9 @@
 #### New Directory Structure Established
 
 **`.rules/` directory** (Project root):
-- `OverviewDesignThinking.md`: Design philosophy and expansion (5.0K, 96 lines)
-- `OverviewCodingTestingThinking.md`: Coding/testing philosophy in a language-neutral way (3.6K, 64 lines)
-- `OverviewBasicRule.md`: Practical workflow compilation (13K, 277 lines)
+- `GuidlineDesign.md`: Design philosophy and expansion (5.0K, 96 lines)
+- `GuidlineCodingTesting.md`: Coding/testing philosophy in a language-neutral way (3.6K, 64 lines)
+- `GuidlineBasicRule.md`: Practical workflow compilation (13K, 277 lines)
 
 **`docs/` directory reorganization**:
 - `docs/diary/`: AI agent work logs (CLAUDE, GEMINI, OPENCODE)
@@ -59,18 +59,18 @@
 
 #### File Split Methodology
 
-**OverviewDesignThinking.md** (7.8K → 5.0K):
+**GuidlineDesign.md** (7.8K → 5.0K):
 - Removed Section 3 (development process/self-logging)
 - Kept: Core philosophy, SPEC/BLUEPRINT roles, project scalability phases
 - Focused purely on "Why" - the philosophical foundation
 
-**OverviewCodingTestingThinking.md** (5.1K → 3.6K):
+**GuidlineCodingTesting.md** (5.1K → 3.6K):
 - Removed Section 3 (Taskfile standardization)
 - Updated Section 1 to be language-neutral (Docstring → Documentation Comments)
 - Kept: Strong typing principles, TDG objectives, technical stack guidelines
-- Added reference to `OverviewBasicRule.md` for practical TDG cycle details
+- Added reference to `GuidlineBasicRule.md` for practical TDG cycle details
 
-**OverviewBasicRule.md (New)**:
+**GuidlineBasicRule.md (New)**:
 - Chapter 1: Human-AI Collaboration Flow Design (philosophy)
 - Chapter 2: go-task/Taskfile.yml Development Interface Unification
 - Chapter 3: PLAN.md / WorkingLog.md Implementation Planning
@@ -110,7 +110,7 @@ Had considered `docs/.rules/`, but chose root for **clear separation of document
 Previously, "TDG philosophy" and "TDG how-to" were in the same sections, causing confusion.
 By creating a dedicated practical guide:
 - **Design Philosophy**: Understand "Why" from OverviewDesign/CodingTesting *Thinking.md
-- **Practical Procedures**: Learn "How" from OverviewBasicRule.md
+- **Practical Procedures**: Learn "How" from GuidlineBasicRule.md
 Achieves separation of concerns, accelerating understanding for both AI agents and developers.
 
 #### Future Benefits
