@@ -1,14 +1,13 @@
 import datetime
-import subprocess
 from pathlib import Path
 from typing import Optional
 
 import typer
-from rich.console import Console
 
 from cospec.agents.hearer import HearerAgent
 from cospec.agents.reviewer import ReviewerAgent
 from cospec.agents.test_generator import TestGeneratorAgent
+from cospec.core.adapters import RichConsole, StandardFilesystem, SubprocessManager, TyperCLI
 from cospec.core.config import CospecConfig, ToolConfig
 from cospec.core.exceptions import (
     CospecError,
@@ -38,10 +37,10 @@ def _analyze_help_output(help_output: str, command: str) -> list[str]:
     return args
 
 
-app = typer.Typer(help="cospec: Collaborative Specification CLI", no_args_is_help=True)
-agent_app = typer.Typer(help="Manage AI-Agent configurations", no_args_is_help=True)
+app = TyperCLI()
+agent_app = TyperCLI()
 app.add_typer(agent_app, name="agent")
-console = Console()
+console = RichConsole()
 
 
 @app.command()
@@ -114,11 +113,12 @@ tasks:
 
     created_count = 0
     skipped_count = 0
+    filesystem = StandardFilesystem()
 
     for path_str, content in files.items():
         path = Path(path_str)
-        if not path.exists():
-            path.write_text(content, encoding="utf-8")
+        if not filesystem.exists(path):
+            filesystem.write_text(path, content, encoding="utf-8")
             console.print(f"[green]Created[/green]: {path}")
             created_count += 1
         else:
@@ -332,11 +332,14 @@ def add(
 
         console.print(f"Analyzing command: {command} {help_flag}")
 
+        process_manager = SubprocessManager()
         try:
-            result = subprocess.run([command, help_flag], capture_output=True, text=True, check=True)
+            result = process_manager.run([command, help_flag])
             help_output = result.stdout + result.stderr
-        except subprocess.CalledProcessError as e:
-            help_output = e.stdout + e.stderr
+        except ToolExecutionError as e:
+            help_output = ""
+            if e.original_error and hasattr(e.original_error, "stdout") and hasattr(e.original_error, "stderr"):
+                help_output = e.original_error.stdout + e.original_error.stderr
             if not help_output:
                 console.print(f"[red]Error:[/red] Command '{command}' failed to execute or has no --help option")
                 raise typer.Exit(code=1) from None
@@ -412,16 +415,19 @@ def test(name: str) -> None:
             else:
                 cmd_args.append(arg)
 
+        process_manager = SubprocessManager()
         try:
-            result = subprocess.run(cmd_args, capture_output=True, text=True, check=True)
+            result = process_manager.run(cmd_args)
             console.print("[green]Success![/green] Agent responded:")
             console.print(result.stdout)
             if result.stderr:
                 console.print(f"[yellow]Warnings:[/yellow] {result.stderr}")
-        except subprocess.CalledProcessError as e:
+        except ToolExecutionError as e:
             console.print("[red]Error:[/red] Agent execution failed")
-            console.print(f"Output: {e.stdout}")
-            console.print(f"Error: {e.stderr}")
+            if e.original_error and hasattr(e.original_error, "stdout"):
+                console.print(f"Output: {e.original_error.stdout}")
+            if e.original_error and hasattr(e.original_error, "stderr"):
+                console.print(f"Error: {e.original_error.stderr}")
             raise typer.Exit(code=1) from None
         except FileNotFoundError:
             console.print(f"[red]Error:[/red] Command '{tool_config.command}' not found in PATH")

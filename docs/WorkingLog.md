@@ -118,6 +118,53 @@ STEP4: 依存性の抽象化とインターフェース設計
 ### 参照
 - PLAN.md: 2026-01-07 コード品質向上リファクタリング
 
+## 2026-01-07 コード品質向上リファクタリング - STEP4 完了
+
+### 実施内容 (STEP4: 依存性の抽象化)
+
+#### 1. インターフェース定義の作成
+- **`src/cospec/core/interfaces.py`** を新規作成:
+  - `CLIInterface`: CLIフレームワークの抽象化
+  - `ConsoleInterface`: コンソール出力の抽象化
+  - `FilesystemInterface`: ファイルシステム操作の抽象化
+  - `ProcessInterface`: 外部プロセス実行の抽象化
+
+#### 2. 具体的実装の作成
+- **`src/cospec/core/adapters.py`** を新規作成:
+  - `TyperCLI`: typerを使用したCLI実装
+  - `RichConsole`: richを使用したコンソール実装
+  - `StandardFilesystem`: 標準ファイルシステム操作の実装
+  - `SubprocessManager`: subprocessを使用したプロセス実装
+
+#### 3. 既存コードの依存性注入
+- **`src/cospec/main.py`**:
+  - typerとrichの直接インポートをインターフェースに変更
+  - TyperCLIとRichConsoleを使用して依存性を注入
+  - subprocess呼び出しをSubprocessManagerに置換
+- **`src/cospec/agents/base.py`**:
+  - subprocess呼び出しをSubprocessManagerに置換
+  - エラーハンドリングを統一
+
+#### 4. テストの更新
+- **既存テストの修正**:
+  - モック対象をsubprocessからSubprocessManagerに変更
+  - テストが正常に動作することを確認
+- **全テストの正常化**: 28件のテストがすべて正常に実行
+
+### 結果
+- ✅ インターフェース定義の作成が完了
+- ✅ 具体的実装の作成が完了
+- ✅ 既存コードの依存性注入が完了
+- ✅ モックしやすい構造へ変更が完了
+- ✅ すべてのチェックがパス（ruff, mypy, pytest）
+- ✅ テストカバレッジが維持
+
+### 次回対応
+STEP5: テストとドキュメントの充実
+
+### 参照
+- PLAN.md: 2026-01-07 コード品質向上リファクタリング
+
 ## 2026-01-05 SPEC.md 仕様変更（認証委譲・Prompt-First）
 
 ### 背景

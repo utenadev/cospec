@@ -1,7 +1,9 @@
-import subprocess
+import os
+import tempfile
 from pathlib import Path
 from typing import Optional
 
+from cospec.core.adapters import SubprocessManager
 from cospec.core.config import CospecConfig, ToolConfig
 from cospec.core.exceptions import ToolExecutionError
 
@@ -34,9 +36,6 @@ class BaseAgent:
         Uses file-based approach for long prompts.
         """
         full_prompt = self._build_prompt(prompt)
-
-        import os
-        import tempfile
 
         cmd_args = [self.tool_config.command]
 
@@ -83,12 +82,15 @@ class BaseAgent:
             for arg in self.tool_config.args:
                 cmd_args.append(arg)
 
+        process_manager = SubprocessManager()
         try:
-            result = subprocess.run(cmd_args, capture_output=True, text=True, check=True)
-            return result.stdout
-        except subprocess.CalledProcessError as e:
-            error_msg = f"Error running tool {self.tool_name}: {e.stderr}"
-            raise ToolExecutionError(error_msg, original_error=e) from e
+            result = process_manager.run(cmd_args)
+            return str(result.stdout)
+        except ToolExecutionError as e:
+            error_msg = f"Error running tool {self.tool_name}: "
+            if e.original_error and hasattr(e.original_error, "stderr"):
+                error_msg += e.original_error.stderr
+            raise ToolExecutionError(error_msg, original_error=e.original_error) from e
         finally:
             if temp_file:
                 try:

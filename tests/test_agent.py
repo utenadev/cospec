@@ -23,7 +23,7 @@ class TestAgentCommands:
 
     def test_agent_add_success(self, tmp_path: Path) -> None:
         """Test adding a new AI-Agent successfully."""
-        with patch("cospec.main.subprocess.run") as mock_run:
+        with patch("cospec.core.adapters.SubprocessManager.run") as mock_run:
             mock_run.return_value = MagicMock(stdout="Usage: mycli [prompt] --help", stderr="", returncode=0)
 
             result = runner.invoke(app, ["agent", "add", "mycli", "--command", "mycli"])
@@ -34,7 +34,7 @@ class TestAgentCommands:
 
     def test_agent_add_command_not_found(self) -> None:
         """Test adding an AI-Agent with a non-existent command."""
-        with patch("cospec.main.subprocess.run") as mock_run:
+        with patch("cospec.core.adapters.SubprocessManager.run") as mock_run:
             mock_run.side_effect = FileNotFoundError("Command not found")
 
             result = runner.invoke(app, ["agent", "add", "nonexistent", "--command", "nonexistent"])
