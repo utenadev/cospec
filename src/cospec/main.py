@@ -15,6 +15,7 @@ from cospec.core.exceptions import (
     SpecNotFoundError,
     ToolExecutionError,
 )
+from cospec.dependencies import init_di
 
 
 def _analyze_help_output(help_output: str, command: str) -> list[str]:
@@ -41,6 +42,20 @@ app = TyperCLI()
 agent_app = TyperCLI()
 app.add_typer(agent_app, name="agent")
 console = RichConsole()
+
+
+def _initialize_di():
+    """Initialize dependency injection system."""
+    try:
+        config = CospecConfig()
+        init_di(config)
+    except Exception as e:
+        # Log initialization error but don't fail app startup
+        console.error(f"DI initialization warning: {e}")
+
+
+# Initialize DI on module import
+_initialize_di()
 
 
 @app.command()
