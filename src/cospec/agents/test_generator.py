@@ -4,10 +4,11 @@ from typing import Any, Dict, List, Optional
 
 from cospec.agents.base import BaseAgent
 from cospec.core.analyzer import ProjectAnalyzer
+from cospec.core.config import CospecConfig
 
 
 class TestGeneratorAgent(BaseAgent):
-    def __init__(self, config: Any, tool_name: Optional[str] = None) -> None:
+    def __init__(self, config: CospecConfig, tool_name: Optional[str] = None) -> None:
         super().__init__(config, tool_name)
         self.analyzer = ProjectAnalyzer()
 

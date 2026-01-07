@@ -1,5 +1,39 @@
 # 作業ログ (Working Log): cospec
 
+## 2026-01-07 コード品質向上リファクタリング - STEP1 完了
+
+### 背景
+cospecコードベースの保守性・可読性・テスト性を向上させるため、体系的なリファクタリングを実施。STEP1として型ヒントの修正とCI設定の強化を行う。
+
+### 実施内容 (STEP1: 型ヒントの修正とCI設定)
+
+#### 1. 型安全性の向上
+- **`src/cospec/agents/test_generator.py:10`**: `config: Any` → `config: CospecConfig`
+- **`src/cospec/agents/hearer.py:10`**: `config: Any` → `config: CospecConfig`
+- **import文の追加**: `CospecConfig` の明示的インポート
+- **コード長の修正**: 120文字制限に合わせた行分割
+
+#### 2. CI設定の強化
+- **mypy設定**: 厳格モードへの移行（`disallow_untyped_defs`, `check_untyped_defs` 設定）
+- **ruff設定**: 既存のLintルールを継承
+
+#### 3. テストとドキュメントの修正
+- **`tests/test_cli.py`**: import順序の修正とコード整形
+- **`tests/test_hear.py`**: 使用されていないimportの削除、メソッド名の命名規則修正
+- **自動整形**: `ruff format` によるコードスタイル統一
+
+### 結果
+- ✅ すべてのチェックがパス（ruff, mypy, pytest）
+- ✅ 型ヒントの改善によりIDE支援とバグ検出能力向上
+- ✅ コードスタイルの統一化
+- ✅ テストカバレッジの維持
+
+### 次回対応
+STEP2: 長大な関数の分割（`main.py`の`review()`関数、`test_generator.py`の`extract_test_scenarios_from_spec()`関数）
+
+### 参照
+- PLAN.md: 2026-01-07 コード品質向上リファクタリング
+
 ## 2026-01-05 SPEC.md 仕様変更（認証委譲・Prompt-First）
 
 ### 背景

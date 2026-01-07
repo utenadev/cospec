@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from cospec.agents.hearer import HearerAgent
 from cospec.core.config import CospecConfig
@@ -86,9 +86,9 @@ class TestHearerAgent:
         assert "出力形式 '不明なフォーマット' の詳細が不明です" in unclear_points
 
     @patch("cospec.agents.hearer.ProjectAnalyzer")
-    def test_create_mission_prompt_spec_not_found(self, MockProjectAnalyzer):
+    def test_create_mission_prompt_spec_not_found(self, mock_project_analyzer):
         """SPEC.md が存在しない場合のエラーハンドリング"""
-        mock_analyzer_instance = MockProjectAnalyzer.return_value
+        mock_analyzer_instance = mock_project_analyzer.return_value
         mock_analyzer_instance.get_spec_content.return_value = None
 
         agent = HearerAgent(self.config)
@@ -98,9 +98,9 @@ class TestHearerAgent:
 
     @patch("cospec.agents.hearer.ProjectAnalyzer")
     @patch("pathlib.Path.read_text")
-    def test_create_mission_prompt_no_unclear_points(self, mock_read_text, MockProjectAnalyzer):
+    def test_create_mission_prompt_no_unclear_points(self, mock_read_text, mock_project_analyzer):
         """不明点がない場合のプロンプト生成"""
-        mock_analyzer_instance = MockProjectAnalyzer.return_value
+        mock_analyzer_instance = mock_project_analyzer.return_value
         mock_analyzer_instance.get_spec_content.return_value = "明確なテスト機能"
         mock_analyzer_instance.collect_context.return_value = "Mocked Project Context"
         mock_read_text.return_value = "Template: {project_context} Hint: {unclear_points_hint}"
@@ -113,9 +113,9 @@ class TestHearerAgent:
 
     @patch("cospec.agents.hearer.ProjectAnalyzer")
     @patch("pathlib.Path.read_text")
-    def test_create_mission_prompt_with_unclear_points(self, mock_read_text, MockProjectAnalyzer):
+    def test_create_mission_prompt_with_unclear_points(self, mock_read_text, mock_project_analyzer):
         """不明点がある場合のプロンプト生成"""
-        mock_analyzer_instance = MockProjectAnalyzer.return_value
+        mock_analyzer_instance = mock_project_analyzer.return_value
         mock_analyzer_instance.get_spec_content.return_value = "- 時点: 条件が不明"
         mock_analyzer_instance.collect_context.return_value = "Mocked Project Context"
         mock_read_text.return_value = "Template: {project_context} Hint: {unclear_points_hint}"
@@ -128,9 +128,9 @@ class TestHearerAgent:
 
     @patch("cospec.agents.hearer.ProjectAnalyzer")
     @patch("pathlib.Path.exists", return_value=False)
-    def test_create_mission_prompt_template_not_found(self, mock_exists, MockProjectAnalyzer):
+    def test_create_mission_prompt_template_not_found(self, mock_exists, mock_project_analyzer):
         """プロンプトテンプレートが存在しない場合のエラーハンドリング"""
-        mock_analyzer_instance = MockProjectAnalyzer.return_value
+        mock_analyzer_instance = mock_project_analyzer.return_value
         mock_analyzer_instance.get_spec_content.return_value = "- 時点: 条件が不明"
         mock_analyzer_instance.collect_context.return_value = "Mocked Project Context"
         agent = HearerAgent(self.config)

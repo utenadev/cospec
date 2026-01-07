@@ -49,7 +49,9 @@ class BaseAgent:
         temp_file = None
 
         if has_file_placeholder and "{prompt}" in str(self.tool_config.args):
-            with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt", dir=cache_dir) as f:
+            with tempfile.NamedTemporaryFile(
+                mode="w", delete=False, encoding="utf-8", suffix=".txt", dir=cache_dir
+            ) as f:
                 f.write(full_prompt)
                 temp_file = f.name
 
@@ -63,7 +65,9 @@ class BaseAgent:
 
         elif has_prompt_placeholder:
             if len(full_prompt) > 8000:
-                with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt", dir=cache_dir) as f:
+                with tempfile.NamedTemporaryFile(
+                    mode="w", delete=False, encoding="utf-8", suffix=".txt", dir=cache_dir
+                ) as f:
                     f.write(full_prompt)
                     temp_file = f.name
 
