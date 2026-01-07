@@ -10,6 +10,12 @@ from cospec.agents.hearer import HearerAgent
 from cospec.agents.reviewer import ReviewerAgent
 from cospec.agents.test_generator import TestGeneratorAgent
 from cospec.core.config import CospecConfig, ToolConfig
+from cospec.core.exceptions import (
+    CospecError,
+    PromptTemplateError,
+    SpecNotFoundError,
+    ToolExecutionError,
+)
 
 
 def _analyze_help_output(help_output: str, command: str) -> list[str]:
@@ -204,10 +210,6 @@ def hear(output: Optional[Path] = None) -> None:
         # 3. Generate Prompt
         prompt = agent.create_mission_prompt()
 
-        if prompt.startswith("Error:"):
-            console.print(f"[red]{prompt}[/red]")
-            raise typer.Exit(code=1)
-
         # 4. Output Result
         if output:
             output.write_text(prompt, encoding="utf-8")
@@ -218,8 +220,17 @@ def hear(output: Optional[Path] = None) -> None:
             console.print("\n[bold]--------------------------------------------------[/bold]")
             console.print("[italic]Tip: Paste this prompt to your AI assistant to start the hearing session.[/italic]")
 
+    except SpecNotFoundError as e:
+        console.print(f"[red]Spec Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
+    except PromptTemplateError as e:
+        console.print(f"[red]Template Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
+    except CospecError as e:
+        console.print(f"[red]Cospec Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
     except Exception as e:
-        console.print(f"[red]Error:[/red] {e}")
+        console.print(f"[red]Unexpected Error:[/red] {e}")
         raise typer.Exit(code=1) from e
 
 
@@ -289,8 +300,14 @@ Scenarios:
             summary_file.write_text(summary_content, encoding="utf-8")
             console.print(f"\n[green]Summary saved to:[/green] {summary_file}")
 
+    except CospecError as e:
+        console.print(f"[red]Cospec Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
+    except ToolExecutionError as e:
+        console.print(f"[red]Tool Error:[/red] {e}")
+        raise typer.Exit(code=1) from e
     except Exception as e:
-        console.print(f"[red]Error:[/red] {e}")
+        console.print(f"[red]Unexpected Error:[/red] {e}")
         raise typer.Exit(code=1) from e
 
 

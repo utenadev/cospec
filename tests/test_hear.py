@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+import pytest
+
 from cospec.agents.hearer import HearerAgent
 from cospec.core.config import CospecConfig
 
@@ -92,9 +94,11 @@ class TestHearerAgent:
         mock_analyzer_instance.get_spec_content.return_value = None
 
         agent = HearerAgent(self.config)
-        prompt = agent.create_mission_prompt()
 
-        assert "Error: docs/SPEC.md が見つかりません" in prompt
+        from cospec.core.exceptions import SpecNotFoundError
+
+        with pytest.raises(SpecNotFoundError):
+            agent.create_mission_prompt()
 
     @patch("cospec.agents.hearer.ProjectAnalyzer")
     @patch("pathlib.Path.read_text")
@@ -134,5 +138,8 @@ class TestHearerAgent:
         mock_analyzer_instance.get_spec_content.return_value = "- 時点: 条件が不明"
         mock_analyzer_instance.collect_context.return_value = "Mocked Project Context"
         agent = HearerAgent(self.config)
-        prompt = agent.create_mission_prompt()
-        assert "Error: Prompt template (src/cospec/prompts/hearer.md) not found." in prompt
+
+        from cospec.core.exceptions import PromptTemplateError
+
+        with pytest.raises(PromptTemplateError):
+            agent.create_mission_prompt()

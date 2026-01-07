@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 from cospec.core.config import CospecConfig, ToolConfig
+from cospec.core.exceptions import ToolExecutionError
 
 
 class BaseAgent:
@@ -87,7 +88,7 @@ class BaseAgent:
             return result.stdout
         except subprocess.CalledProcessError as e:
             error_msg = f"Error running tool {self.tool_name}: {e.stderr}"
-            raise RuntimeError(error_msg) from e
+            raise ToolExecutionError(error_msg, original_error=e) from e
         finally:
             if temp_file:
                 try:

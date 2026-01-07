@@ -39,10 +39,10 @@ def test_hear_command_error():
     )
 
     with patch("cospec.main.CospecConfig.load_config", return_value=mock_config):
-        with patch("cospec.main.HearerAgent.create_mission_prompt", return_value="Error: Something went wrong"):
+        with patch("cospec.main.HearerAgent.create_mission_prompt", side_effect=Exception("Something went wrong")):
             result = runner.invoke(app, ["hear"])
             assert result.exit_code == 1
-            assert "Error: Something went wrong" in result.stdout
+            assert "Unexpected Error:" in result.stdout
 
 
 def test_hear_command_output_file():

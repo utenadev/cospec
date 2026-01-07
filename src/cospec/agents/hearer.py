@@ -5,6 +5,7 @@ from typing import List, Optional
 from cospec.agents.base import BaseAgent
 from cospec.core.analyzer import ProjectAnalyzer
 from cospec.core.config import CospecConfig
+from cospec.core.exceptions import PromptTemplateError, SpecNotFoundError
 
 
 class HearerAgent(BaseAgent):
@@ -56,7 +57,7 @@ class HearerAgent(BaseAgent):
         spec_content = self.analyzer.get_spec_content()
 
         if not spec_content:
-            return "Error: docs/SPEC.md が見つかりません。まずは `cospec init` を実行してください。"
+            raise SpecNotFoundError("docs/SPEC.md が見つかりません。まずは `cospec init` を実行してください。")
 
         unclear_points = self.extract_unclear_points(spec_content)
 
@@ -69,7 +70,7 @@ class HearerAgent(BaseAgent):
         # テンプレート読み込み
         template_path = Path(__file__).parent.parent / "prompts" / "hearer.md"
         if not template_path.exists():
-            return "Error: Prompt template (src/cospec/prompts/hearer.md) not found."
+            raise PromptTemplateError("Prompt template (src/cospec/prompts/hearer.md) not found.")
 
         template = template_path.read_text(encoding="utf-8")
         prompt = template.replace("{project_context}", project_context)
