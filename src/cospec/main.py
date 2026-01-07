@@ -9,7 +9,7 @@ from rich.console import Console
 from cospec.agents.hearer import HearerAgent
 from cospec.agents.reviewer import ReviewerAgent
 from cospec.agents.test_generator import TestGeneratorAgent
-from cospec.core.config import ToolConfig, load_config
+from cospec.core.config import CospecConfig, ToolConfig
 
 
 def _analyze_help_output(help_output: str, command: str) -> list[str]:
@@ -148,24 +148,17 @@ def review(tool: Optional[str] = typer.Option(None, help="Tool to use (qwen, ope
 
     try:
         # 1. Load Config
-        config = load_config()
+        config = CospecConfig.load_config()
 
         # 2. Determine tools to use
         if tool:
             tools_to_use = [tool]
         else:
-            other_tools = [name for name in config.tools.keys() if name != config.dev_tool]
-            if len(other_tools) >= 2:
-                import random
-
-                tools_to_use = random.sample(other_tools, 2)
+            tools_to_use = config.select_review_tools()
+            if len(tools_to_use) > 1:
                 console.print(f"[yellow]Using {len(tools_to_use)} different tools for diverse review[/yellow]")
-            elif other_tools:
-                tools_to_use = [other_tools[0]]
-                console.print("[yellow]Only 1 tool available (excluding dev_tool)[/yellow]")
             else:
-                tools_to_use = [config.default_tool]
-                console.print("[yellow]No other tools available, using default[/yellow]")
+                console.print("[yellow]Only 1 tool available for review[/yellow]")
 
         # 3. Run reviews
         reports = []
@@ -203,7 +196,7 @@ def hear(output: Optional[Path] = None) -> None:
 
     try:
         # 1. Load Config
-        config = load_config()
+        config = CospecConfig.load_config()
 
         # 2. Initialize Agent (Tool name is irrelevant for prompt generation)
         agent = HearerAgent(config)
@@ -239,7 +232,7 @@ def test_gen(tool: Optional[str] = None, output: Optional[Path] = None, validate
 
     try:
         # 1. Load Config
-        config = load_config()
+        config = CospecConfig.load_config()
 
         # 2. Select tool
         tool_name = tool or config.select_tool_for_development()
@@ -315,7 +308,7 @@ def add(
     console.print(f"[bold blue]Adding AI-Agent '{name}'...[/bold blue]")
 
     try:
-        config = load_config()
+        config = CospecConfig.load_config()
 
         if name in config.tools:
             console.print(f"[yellow]Warning:[/yellow] Agent '{name}' already exists. Overwriting...")
@@ -358,7 +351,7 @@ def list_agents() -> None:
     List all registered AI-Agents.
     """
     try:
-        config = load_config()
+        config = CospecConfig.load_config()
         console.print("[bold blue]Registered AI-Agents:[/bold blue]\n")
 
         for name, tool_config in config.tools.items():
@@ -383,7 +376,7 @@ def test(name: str) -> None:
     console.print(f"[bold blue]Testing AI-Agent '{name}'...[/bold blue]")
 
     try:
-        config = load_config()
+        config = CospecConfig.load_config()
 
         if name not in config.tools:
             console.print(f"[red]Error:[/red] Agent '{name}' not found")

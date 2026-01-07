@@ -48,16 +48,28 @@ class CospecConfig(BaseSettings):
             return random.choice(other_tools)
         return self.default_tool
 
+    def select_review_tools(self) -> list[str]:
+        """Select AI-Agent tools for review command (2 tools if available, excluding dev_tool)."""
+        other_tools = [name for name in self.tools.keys() if name != self.dev_tool]
+        if len(other_tools) >= 2:
+            import random
 
-def load_config(config_path: Optional[Path] = None) -> CospecConfig:
-    """Load configuration from file or use defaults."""
-    if config_path is None:
-        config_path = Path(".cospec/config.json")
+            return random.sample(other_tools, 2)
+        elif other_tools:
+            return [other_tools[0]]
+        else:
+            return [self.default_tool]
 
-    config_dict = {}
+    @staticmethod
+    def load_config(config_path: Optional[Path] = None) -> "CospecConfig":
+        """Load configuration from file or use defaults."""
+        if config_path is None:
+            config_path = Path(".cospec/config.json")
 
-    if config_path.exists():
-        with open(config_path, "r", encoding="utf-8") as f:
-            config_dict = json.load(f)
+        config_dict = {}
 
-    return CospecConfig(**config_dict)
+        if config_path.exists():
+            with open(config_path, "r", encoding="utf-8") as f:
+                config_dict = json.load(f)
+
+        return CospecConfig(**config_dict)

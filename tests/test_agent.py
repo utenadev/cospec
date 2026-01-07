@@ -51,9 +51,7 @@ class TestAgentCommands:
         config.tools["custom_tool"] = ToolConfig(command="custom", args=["arg1", "{prompt}"])
         config.save_to_file(config_path)
 
-        from cospec.core.config import load_config
-
-        loaded_config = load_config(config_path)
+        loaded_config = CospecConfig.load_config(config_path)
 
         assert "custom_tool" in loaded_config.tools
         assert loaded_config.tools["custom_tool"].command == "custom"

@@ -19,7 +19,7 @@ def test_hear_command_success():
         tools={"mock_tool": ToolConfig(command="mock_command", args=[])},
     )
 
-    with patch("cospec.main.load_config", return_value=mock_config):
+    with patch("cospec.main.CospecConfig.load_config", return_value=mock_config):
         with patch("cospec.main.HearerAgent.create_mission_prompt", return_value="Mocked Mission Prompt"):
             result = runner.invoke(app, ["hear"])
             assert result.exit_code == 0
@@ -38,7 +38,7 @@ def test_hear_command_error():
         tools={"mock_tool": ToolConfig(command="mock_command", args=[])},
     )
 
-    with patch("cospec.main.load_config", return_value=mock_config):
+    with patch("cospec.main.CospecConfig.load_config", return_value=mock_config):
         with patch("cospec.main.HearerAgent.create_mission_prompt", return_value="Error: Something went wrong"):
             result = runner.invoke(app, ["hear"])
             assert result.exit_code == 1
@@ -56,7 +56,7 @@ def test_hear_command_output_file():
         tools={"mock_tool": ToolConfig(command="mock_command", args=[])},
     )
 
-    with patch("cospec.main.load_config", return_value=mock_config):
+    with patch("cospec.main.CospecConfig.load_config", return_value=mock_config):
         with patch("cospec.main.HearerAgent.create_mission_prompt", return_value="Mocked Mission Prompt"):
             with patch("pathlib.Path.write_text") as mock_write_text:
                 result = runner.invoke(app, ["hear", "--output", "test.txt"])
@@ -70,7 +70,7 @@ def test_hear_command_general_exception():
     """
     Test the 'hear' command's general exception handling.
     """
-    with patch("cospec.main.load_config", side_effect=Exception("General Error")):
+    with patch("cospec.main.CospecConfig.load_config", side_effect=Exception("General Error")):
         result = runner.invoke(app, ["hear"])
         assert result.exit_code == 1
         assert "Error: General Error" in result.stdout
