@@ -124,8 +124,8 @@ task setup
 These are the **sole reference** for all development decisions：
 
 1. **[`.rules/OverviewDesignThinking.md`](./.rules/OverviewDesignThinking.md)** - 設計思想（**Why** the rules exist）
-2. **[`.rules/OverviewBasicRule.md`](./.rules/OverviewBasicRule.md)** - 実践ルール（**How** to develop）
-3. **[`.rules/OverviewCodingTestingThinking.md`](./.rules/OverviewCodingTestingThinking.md)** - コーディング思想（**What** kind of code to write）
+2. **[`.rules/GuidlineBasicRule.md`](./.rules/GuidlineBasicRule.md)** - 実践ルール（**How** to develop）
+3. **[`.rules/GuidlineCodingTesting.md`](./.rules/GuidlineCodingTesting.md)** - コーディング思想（**What** kind of code to write）
 
 **Development Process:**
 1. Read `.rules/` 3 files

@@ -414,3 +414,44 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
 
 > All checks passed.
 
+## 2026-01-08 ドキュメントファイルリネーム作業 (Claude)
+
+### 目的
+重要ドキュメントファイルのリネーム作業を実施し、ファイル名と内容内の参照を一貫性ある形で更新する。
+
+### 対象ファイル
+- `.rules/OverviewBasicRule.md` → `.rules/GuidlineBasicRule.md`
+- `.rules/OverviewCodingTestingThinking.md` → `.rules/GuidlineCodingTesting.md`
+- `.rules/OverviewDesignThinking.md` → `.rules/GuidlineDesign.md`
+
+### 作業ステップ
+1. **ファイル名の実際のリネーム**
+   - git mv コマンドでファイルをリネーム
+   - ファイルパスの一貫性を確認
+
+2. **ファイル内参照の更新**
+   - 各ファイル内で他のOverviewファイルを参照している部分を更新
+   - `.md` 拡張子を含む全ての参照を対象とする
+
+3. **外部からの参照更新**
+   - CLAUDE.md 内の参照リンクを更新
+   - README.ja.md 内の参照リンクを更新
+   - README.md 内の参照リンクを更新
+   - HISTORY_CONTEXT.md 内の参照リンクを更新
+
+4. **品質チェック**
+   - task check の実施（ソース修正のため必要）
+   - リンク切れの確認
+
+5. **作業記録**
+   - WorkingLog.md に実施内容を記述
+
+6. **コミットとPR作成**
+   - git commit で変更を確定
+   - gh pr create でプルリクエストを作成
+
+### 期待効果
+- ドキュメントファイル名の一貫性向上
+- リネーム後の参照整合性確保
+- 保守性の向上
+

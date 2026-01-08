@@ -270,8 +270,8 @@ AIエージェントは、`SPEC.md` を元に以下の内容を人間に提示�
 
 ## 参考資料
 
-- [OverviewDesignThinking.md](./OverviewDesignThinking.md): 設計思想の背景
-- [OverviewCodingTestingThinking.md](./OverviewCodingTestingThinking.md): コーディング・テストの考え方
+- [GuidlineDesign.md](./GuidlineDesign.md): 設計思想の背景
+- [GuidlineCodingTesting.md](./GuidlineCodingTesting.md): コーディング・テストの考え方
 - [docs/SPEC.md](../docs/SPEC.md): 機能要件
 - [docs/BLUEPRINT.md](../docs/BLUEPRINT.md): 技術設計
 - [docs/PLAN.md](../docs/PLAN.md): 実装計画

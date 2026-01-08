@@ -254,8 +254,8 @@ task type-check            # 型チェック（mypy）
 ### ✅ 必須ガイド
 - 開発判断の**唯一の根拠**となるガイドラインです：
 1. **[`.rules/OverviewDesignThinking.md`](./.rules/OverviewDesignThinking.md)**: 設計思想（**なぜ**このルールがあるのか）
-2. **[`.rules/OverviewBasicRule.md`](./.rules/OverviewBasicRule.md)**: 実践ルール（**どうやって**開発するか）
-3. **[`.rules/OverviewCodingTestingThinking.md`](./.rules/OverviewCodingTestingThinking.md)**: コーディング思想（**どのような**コードを書くか）
+2. **[`.rules/GuidlineBasicRule.md`](./.rules/GuidlineBasicRule.md)**: 実践ルール（**どうやって**開発するか）
+3. **[`.rules/GuidlineCodingTesting.md`](./.rules/GuidlineCodingTesting.md)**: コーディング思想（**どのような**コードを書くか）
 
 ### 🚀 思想 → 実践の順番で読む
 - 必ず OverviewDesignThinking で「なぜ」を理解してから、OverviewBasicRule で「どうやって」を確認
@@ -286,8 +286,8 @@ task type-check            # 型チェック（mypy）
 
 ### ガイドライン
 - [.rules/OverviewDesignThinking.md](./.rules/OverviewDesignThinking.md): 設計思考ガイドライン（思想・哲学）
-- [.rules/OverviewBasicRule.md](./.rules/OverviewBasicRule.md): Human-AI協働開発の実践ワークフロー
-- [.rules/OverviewCodingTestingThinking.md](./.rules/OverviewCodingTestingThinking.md): コーディングとテストガイドライン
+- [.rules/GuidlineBasicRule.md](./.rules/GuidlineBasicRule.md): Human-AI協働開発の実践ワークフロー
+- [.rules/GuidlineCodingTesting.md](./.rules/GuidlineCodingTesting.md): コーディングとテストガイドライン
 
 ### プロジェクト仕様
 - [docs/SPEC.md](./docs/SPEC.md): プロジェクト固有の機能要件
