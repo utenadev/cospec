@@ -12,7 +12,7 @@
 
 ### FR-001: プロジェクト初期化 (`init`)
 - **機能**: 現在のディレクトリに `cospec` 推奨の構造（`docs/`, `Taskfile.yml`）を展開する。
-- **ガイドライン注入**: `OverviewDesignThinking.md` 等の「思想」ファイルを自動配置する。
+- **ガイドライン注入**: `GuidlineDesign.md` 等の「思想」ファイルを自動配置する。
 
 ### FR-002: 要件ヒアリング (`hear`)
 - **機能**: AIエージェントへの指令書（Mission Prompt）を生成する。
@@ -35,7 +35,7 @@
 - **チェック観点**:
     - **不足**: SPECにあるが実装/テストがない、逆に実装にあるがSPECにない機能。
     - **不整合**: READMEの説明と実際の挙動の違い。
-    - **ガイドライン準拠**: `Overview{Design,CodingTesting}Thinking.md` のルール（型ヒント、モック利用など）を守っているか。
+    - **ガイドライン準拠**: `Guidline{Design,CodingTesting}Thinking.md` のルール（型ヒント、モック利用など）を守っているか。
 - **出力アーティファクト**:
     - ファイル名: `docs/review_{yyyyMMdd}_{AgentName}+{ModelName}.md`
     - 内容: 重要度別の警告、修正アドバイス。

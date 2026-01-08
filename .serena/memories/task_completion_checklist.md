@@ -11,9 +11,9 @@ source venv/bin/activate # Activate virtual environment
 ### 2. Task Implementation
 
 #### Before Starting
-- **Read `.rules/OverviewDesignThinking.md`** - Understand design philosophy
-- **Read `.rules/OverviewBasicRule.md`** - Follow development workflow
-- **Read `.rules/OverviewCodingTestingThinking.md`** - Code quality standards
+- **Read `.rules/GuidlineDesign.md`** - Understand design philosophy
+- **Read `.rules/GuidlineBasicRule.md`** - Follow development workflow
+- **Read `.rules/GuidlineCodingTesting.md`** - Code quality standards
 - **Match requirements** against SPEC.md/BLUEPRINT.md
 - **List tasks** in PLAN.md and confirm
 

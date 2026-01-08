@@ -22,7 +22,7 @@ def test_init_creates_files(tmp_path: Path) -> None:
         # Check docs exist
         assert os.path.exists("docs")
         assert os.path.exists("docs/SPEC.md")
-        assert os.path.exists("docs/OverviewDesignThinking.md")
+        assert os.path.exists("docs/GuidlineDesign.md")
 
         # Check Taskfile and gitignore exist
         assert os.path.exists("Taskfile.yml")

@@ -2,17 +2,17 @@
 
 ## Development Guidelines
 
-### Design Philosophy (`.rules/OverviewDesignThinking.md`)
+### Design Philosophy (`.rules/GuidlineDesign.md`)
 - **Why rules exist** - Understanding the reasoning behind conventions
 - **Design patterns** - Consistent architectural approaches
 - **Philosophy documentation** - Ensure all decisions align with core principles
 
-### Development Workflow (`.rules/OverviewBasicRule.md`)
+### Development Workflow (`.rules/GuidlineBasicRule.md`)
 - **Human-AI collaboration workflow** - Standardized interaction patterns
 - **Quality gates** - `task check` as mandatory validation
 - **Communication protocols** - How AI and humans interact
 
-### Coding Standards (`.rules/OverviewCodingTestingThinking.md`)
+### Coding Standards (`.rules/GuidlineCodingTesting.md`)
 - **Code quality requirements** - Type safety, testing, documentation
 - **Testing philosophy** - Test-Driven Generation approach
 - **Code review standards** - Consistency and quality expectations

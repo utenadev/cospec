@@ -40,7 +40,7 @@ cospec/
     > 以下の観点で矛盾を洗い出してください。
     > 1. 要件の網羅性: SPECにある機能がテストされているか？
     > 2. ドキュメントの整合性: READMEとSPECに矛盾はないか？
-    > 3. ルール準拠: `OverviewCodingTestingThinking.md` (型ヒント、Mock使用)に従っているか？
+    > 3. ルール準拠: `GuidlineCodingTesting.md` (型ヒント、Mock使用)に従っているか？
     > 
     > 褒める必要はありません。問題点と具体的な修正案、重要度(High/Mid/Low)をリストアップしてください。
 

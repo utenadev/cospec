@@ -120,8 +120,8 @@ tasks:
 
     files = {
         "docs/SPEC.md": spec_template,
-        "docs/OverviewDesignThinking.md": overview_design,
-        "docs/OverviewCodingTestingThinking.md": overview_coding,
+        "docs/GuidlineDesign.md": overview_design,
+        "docs/GuidlineCodingTesting.md": overview_coding,
         "Taskfile.yml": taskfile_template,
         ".gitignore": "venv/\n__pycache__/\n.env\n",
     }
@@ -144,9 +144,9 @@ tasks:
 
     console.print("\n[bold green]✅ Required Reading for AI Agents[/bold green]")
     console.print("Before starting any development work in this project, read these 3 guides:")
-    console.print("1. [bold].rules/OverviewDesignThinking.md[/bold] - Design philosophy (Why)")
-    console.print("2. [bold].rules/OverviewBasicRule.md[/bold] - Practice workflows (How)")
-    console.print("3. [bold].rules/OverviewCodingTestingThinking.md[/bold] - Coding principles (What)")
+    console.print("1. [bold].rules/GuidlineDesign.md[/bold] - Design philosophy (Why)")
+    console.print("2. [bold].rules/GuidlineBasicRule.md[/bold] - Practice workflows (How)")
+    console.print("3. [bold].rules/GuidlineCodingTesting.md[/bold] - Coding principles (What)")
     console.print("\n[italic]These are the sole references for all development decisions.[/italic]")
 
 

@@ -6,11 +6,11 @@ This file provides context and guidelines for Qwen AI agents working on the `cos
 
 ### ✅ 必須ガイド
 開発判断の**唯一の根拠**となるガイドライン：
-1. **`.rules/OverviewDesignThinking.md`**: 設計思想（**なぜ**このルールがあるのか）
-2. **`.rules/OverviewBasicRule.md`**: 実践ルール（**どうやって**開発するか）
-3. **`.rules/OverviewCodingTestingThinking.md`**: コーディング思想（**どのような**コードを書くか）
+1. **`.rules/GuidlineDesign.md`**: 設計思想（**なぜ**このルールがあるのか）
+2. **`.rules/GuidlineBasicRule.md`**: 実践ルール（**どうやって**開発するか）
+3. **`.rules/GuidlineCodingTesting.md`**: コーディング思想（**どのような**コードを書くか）
 
-**思想 → 実践の順で読む**: 必ず OverviewDesignThinking で「なぜ」を理解してから、OverviewBasicRule で「どうやって」を確認
+**思想 → 実践の順で読む**: 必ず GuidlineDesign で「なぜ」を理解してから、GuidlineBasicRule で「どうやって」を確認
 
 ---
 
@@ -47,7 +47,7 @@ This file provides context and guidelines for Qwen AI agents working on the `cos
 Adhere strictly to the following:
 
 1.  **Guidelines**
-    *   Follow `.rules/OverviewCodingTestingThinking.md` for coding and testing standards
+    *   Follow `.rules/GuidlineCodingTesting.md` for coding and testing standards
     *   Strong typing is mandatory: Avoid `Any` types, use `Pydantic` models
     *   Self-documenting code: Write docstrings **before** implementation
     *   Test-Driven Generation (TDG): Follow the scaffold → test → implement → refactor cycle
@@ -55,7 +55,7 @@ Adhere strictly to the following:
     *   Mock external dependencies in tests
 
 2.  **Workflow**
-    *   Follow `.rules/OverviewBasicRule.md` for development process
+    *   Follow `.rules/GuidlineBasicRule.md` for development process
     *   PLAN.md: List tasks before implementation
     *   WorkingLog.md: Record work completion and decisions
     *   Before implementation, read SPEC.md/BLUEPRINT.md to understand requirements

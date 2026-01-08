@@ -123,7 +123,7 @@ task setup
 **Required Reading:** `.rules/` ディレクトリ以下の3ファイルを**必ず読んでください**。
 These are the **sole reference** for all development decisions：
 
-1. **[`.rules/OverviewDesignThinking.md`](./.rules/OverviewDesignThinking.md)** - 設計思想（**Why** the rules exist）
+1. **[`.rules/GuidlineDesign.md`](./.rules/GuidlineDesign.md)** - 設計思想（**Why** the rules exist）
 2. **[`.rules/GuidlineBasicRule.md`](./.rules/GuidlineBasicRule.md)** - 実践ルール（**How** to develop）
 3. **[`.rules/GuidlineCodingTesting.md`](./.rules/GuidlineCodingTesting.md)** - コーディング思想（**What** kind of code to write）
 
@@ -146,7 +146,7 @@ By creating `.rules/` and separating philosophy (why), rules (how), and guidelin
 ```bash
 cospec init
 ```
-This creates a `docs/` directory and `.rules/` directory with templates for specifications and guidelines (SPEC.md, BLUEPRINT.md, Overview*.md).
+This creates a `docs/` directory and `.rules/` directory with templates for specifications and guidelines (SPEC.md, BLUEPRINT.md, Guidline*.md).
 
 #### 2. Clarify Ambiguous Requirements
 ```bash
