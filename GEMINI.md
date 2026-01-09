@@ -6,11 +6,11 @@ This file provides context and guidelines for AI agents working on the `cospec` 
 
 ### ✅ 必須ガイド
 開発判断の**唯一の根拠**となるガイドライン：
-1. **`.rules/OverviewDesignThinking.md`**: 設計思想（**なぜ**このルールがあるのか）
-2. **`.rules/OverviewBasicRule.md`**: 実践ルール（**どうやって**開発するか）
-3. **`.rules/OverviewCodingTestingThinking.md`**: コーディング思想（**どのような**コードを書くか）
+1. **`.rules/GuidlineDesign.md`**: 設計思想（**なぜ**このルールがあるのか）
+2. **`.rules/GuidlineBasicRule.md`**: 実践ルール（**どうやって**開発するか）
+3. **`.rules/GuidlineCodingTesting.md`**: コーディング思想（**どのような**コードを書くか）
 
-**思想 → 実践の順で読む**: 必ず OverviewDesignThinking で「なぜ」を理解してから、OverviewBasicRule で「どうやって」を確認
+**思想 → 実践の順で読む**: 必ず GuidlineDesign で「なぜ」を理解してから、GuidlineBasicRule で「どうやって」を確認
 
 ---
 
@@ -37,7 +37,7 @@ Based on `docs/BLUEPRINT.md`:
 *   **Task Runner:** `go-task`
 
 ## 4. Development Guidelines
-Adhere strictly to `.rules/OverviewCodingTestingThinking.md`:
+Adhere strictly to `.rules/GuidlineCodingTesting.md`:
 
 ### Coding Standards ("Guardrails for AI")
 *   **Strong Typing:** Use `Pydantic` for data structures. Avoid `Any`.

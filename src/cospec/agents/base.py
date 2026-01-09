@@ -1,17 +1,19 @@
 import os
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from cospec.core.adapters import SubprocessManager
 from cospec.core.config import CospecConfig, ToolConfig
 from cospec.core.exceptions import ToolExecutionError
 from cospec.core.interfaces import ExceptionHandlerInterface, LoggerInterface
-from cospec.dependencies.deps import BaseDeps
+
+if TYPE_CHECKING:
+    from cospec.dependencies.deps import BaseDeps
 
 
 class BaseAgent:
-    def __init__(self, config: CospecConfig, tool_name: Optional[str] = None, deps: Optional[BaseDeps] = None):
+    def __init__(self, config: CospecConfig, tool_name: Optional[str] = None, deps: Optional["BaseDeps"] = None):
         """Initialize BaseAgent with DI support.
 
         Args:
@@ -149,6 +151,6 @@ class BaseAgent:
                     if self.logger:
                         self.logger.warning(f"Failed to cleanup temp file: {cleanup_error}")
 
-    def get_dependencies(self) -> Optional[BaseDeps]:
+    def get_dependencies(self) -> Optional["BaseDeps"]:
         """Get the dependency container for this agent."""
         return self._deps

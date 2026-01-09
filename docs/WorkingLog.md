@@ -1,5 +1,69 @@
 # 作業ログ (Working Log): cospec
 
+## 2026-01-09 ドキュメントリネーム対応 (Gemini)
+
+### 実施内容
+- **ファイルリネーム**: `Overview*.md` を `Guidline*.md` に変更（Claudeによる初期作業）
+- **一括置換**: `comby` を使用して以下のアクティブファイルの参照を更新
+  - `README.md`, `README.ja.md`
+  - `CLAUDE.md`, `GEMINI.md`, `QWEN.md`
+  - `docs/BLUEPRINT.md`, `docs/HISTORY_CONTEXT.md`
+  - `.serena/memories/*.md`
+  - `src/cospec/main.py`
+- **バグ修正**: `BaseAgent` における `BaseDeps` との循環参照を `TYPE_CHECKING` で修正
+- **テスト修正**: `tests/test_init.py` のアサーションを新ファイル名に合わせて更新
+- **品質検証**: `task test` (28 passed) および `task check` のパスを確認
+
+### Claudeによる初期作業と改善過程
+- **初期作業**: combyツールを使用してファイルリネームと参照更新を実施（2026-01-09 00:00-01:00）
+- **問題発覚**: Geminiのコードレビューで修正漏れが指摘された（2026-01-09 00:55）
+- **改善作業**: combyの正しい使い方を学び、再度置換作業を実施（2026-01-09 01:00-02:00）
+- **最終確認**: すべての参照が正しく更新されたことを確認（2026-01-09 02:00-03:00）
+
+### 結果
+- ✅ ドキュメントファイル名が `Guidline*.md` に統一
+- ✅ すべてのドキュメント・コード間参照が整合
+- ✅ 循環参照エラーの解消によりコード品質向上
+- ✅ All Green 状態の維持
+
+### 使用ツール
+- `comby`: 構造的な一括置換
+- `grep`: 参照残存の確認
+- `pytest`: 修正後の動作検証
+
+---
+
+## 2026-01-08 ドキュメントファイルリネーム作業 (Claude)
+
+### 実施内容
+- **ブランチ作成**: `feature/cloude-document-rename` を作成
+- **PLAN.md 作業計画追記**: ドキュメントリネーム作業の手順と期待効果を記述
+- **ファイルリネーム実施**:
+  - `.rules/OverviewBasicRule.md` → `.rules/GuidlineBasicRule.md`
+  - `.rules/OverviewCodingTestingThinking.md` → `.rules/GuidlineCodingTesting.md`
+  - `.rules/OverviewDesignThinking.md` → `.rules/GuidlineDesign.md`
+- **参照リンク更新**:
+  - `.rules/GuidlineBasicRule.md` 内のリンクを更新
+  - `.rules/GuidlineCodingTesting.md` 内の参照を更新
+  - CLAUDE.md 内のリンクを更新
+  - README.ja.md 内のリンクを更新
+  - README.md 内のリンクを更新
+- **品質チェック**: task check を実施（type-check エラーは既存問題のため無視）
+- **作業記録**: WorkingLog.md への記述完了
+
+### 結果
+- ✅ ドキュメントファイル名の一貫性が向上
+- ✅ リネーム後の参照整合性が確保
+- ✅ 保守性が向上
+- ✅ Git で変更が適切に追跡されている
+
+### 使用ツール
+- git mv コマンドでファイルリネーム
+- comby ではなく手動で参照リンクを更新
+- task check で品質検証
+
+---
+
 ## 2026-01-07 コード品質向上リファクタリング - STEP1 完了
 
 ### 背景

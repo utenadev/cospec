@@ -55,9 +55,9 @@
 - **`docs/WorkingLog.md`** - Development history
 
 ### `.rules/` Directory
-- **`OverviewDesignThinking.md`** - Design philosophy and patterns
-- **`OverviewBasicRule.md`** - Human-AI協働開発の実践ワークフロー
-- **`OverviewCodingTestingThinking.md`** - Coding and testing guidelines
+- **`GuidlineDesign.md`** - Design philosophy and patterns
+- **`GuidlineBasicRule.md`** - Human-AI協働開発の実践ワークフロー
+- **`GuidlineCodingTesting.md`** - Coding and testing guidelines
 
 ## Development Workflow Integration
 

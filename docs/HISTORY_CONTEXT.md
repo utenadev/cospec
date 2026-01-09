@@ -6,9 +6,9 @@
 ## 2. 達成された状態 (Current State)
 - **ディレクトリ**: `../cospec` が作成済み。
 - **ドキュメント**:
-    - `.rules/OverviewDesignThinking.md`: 設計思想（Codebase as Context）。
-    - `.rules/OverviewCodingTestingThinking.md`: 実装・テスト思想（TDG）。
-    - `.rules/OverviewBasicRule.md`: Human-AI協働開発の実践ワークフロー。
+    - `.rules/GuidlineDesign.md`: 設計思想（Codebase as Context）。
+    - `.rules/GuidlineCodingTesting.md`: 実装・テスト思想（TDG）。
+    - `.rules/GuidlineBasicRule.md`: Human-AI協働開発の実践ワークフロー。
     - `docs/SPEC.md`: 要件定義（FR-001 `init` ～ FR-006 `fix`）。
     - `docs/BLUEPRINT.md`: アーキテクチャ設計（Reviewer/Interviewer/Coderエージェント）。
 - **タスクランナー**:

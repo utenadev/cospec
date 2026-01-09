@@ -45,7 +45,7 @@ AIエージェントがファイル操作ツールを用いて自律的にヒア
 ## 2026-01-05 ドキュメント構造の整理・Overviewファイル分割
 
 ### 背景
-docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と OverviewCodingTestingThinking.md に開発プロセス・ワークフローが混在して参照しにくかったため分割を検討。
+docs/ ディレクトリが煩雑になり、GuidlineDesign.md と GuidlineCodingTesting.md に開発プロセス・ワークフローが混在して参照しにくかったため分割を検討。
 
 ### 計画
 - [x] **ディレクトリ構造の整理**
@@ -53,9 +53,9 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
   - [x] `docs/diary/` ディレクトリ作成（AIエージェントの作業ログ）
   - [x] `docs/report/` ディレクトリ作成（コードレビューレポート）
 - [x] **ファイル分割・見直し**
-  - [x] `OverviewDesignThinking.md` から開発プロセス（セクション3）を削除
-  - [x] `OverviewCodingTestingThinking.md` からTaskfile/自動化（セクション3）を削除し、言語中立表現に修正
-  - [x] `OverviewBasicRule.md` を新規作成（13K, 277行）
+  - [x] `GuidlineDesign.md` から開発プロセス（セクション3）を削除
+  - [x] `GuidlineCodingTesting.md` からTaskfile/自動化（セクション3）を削除し、言語中立表現に修正
+  - [x] `GuidlineBasicRule.md` を新規作成（13K, 277行）
     - [x] 第1章: Human-AI協働のフロー設計（考え方）
     - [x] 第2章: go-task/Taskfile.yml開発インターフェース統一
     - [x] 第3章: PLAN.md / WorkingLog.md 実装計画
@@ -83,7 +83,7 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
     - `BaseAgent` および `ReviewerAgent` を実装。
     - `review` コマンドを新しいエージェントクラスを使うようにリファクタリング。
 - [x] **`init` コマンドの強化**
-    - `OverviewCodingTestingThinking.md` やその他のガイドラインファイルを生成対象に追加。
+    - `GuidlineCodingTesting.md` やその他のガイドラインファイルを生成対象に追加。
 - [x] **言語設定の追加**
         - `CospecConfig` に `language` フィールドを追加（デフォルト: `ja`）。
         - `BaseAgent` でプロンプトに言語指示（日本語回答の強制）を自動付与するように更新。
@@ -138,8 +138,8 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
 ### Phase 4: ドキュメントと品質保証
 - [ ] **ドキュメントの更新**
   - [ ] `docs/BLUEPRINT.md` に hear/test-gen の設計を反映
-  - [ ] `docs/OverviewDesignThinking.md` に TDG フローを追記
-  - [ ] `docs/OverviewCodingTestingThinking.md` に具体的な実装フローを追加
+  - [ ] `docs/GuidlineDesign.md` に TDG フローを追記
+  - [ ] `docs/GuidlineCodingTesting.md` に具体的な実装フローを追加
 - [ ] **品質保証の強化**
   - [ ] 統合テスト環境の構築
   - [ ] E2E テストの実装
@@ -413,4 +413,45 @@ docs/ ディレクトリが煩雑になり、OverviewDesignThinking.md と Overv
 1. STEP1 → 2. STEP2 → 3. STEP3 → 4. STEP4 → 5. STEP5
 
 > All checks passed.
+
+## 2026-01-08 ドキュメントファイルリネーム作業 (Claude)
+
+### 目的
+重要ドキュメントファイルのリネーム作業を実施し、ファイル名と内容内の参照を一貫性ある形で更新する。
+
+### 対象ファイル
+- `.rules/GuidlineBasicRule.md` → `.rules/GuidlineBasicRule.md`
+- `.rules/GuidlineCodingTesting.md` → `.rules/GuidlineCodingTesting.md`
+- `.rules/GuidlineDesign.md` → `.rules/GuidlineDesign.md`
+
+### 作業ステップ
+1. **ファイル名の実際のリネーム**
+   - git mv コマンドでファイルをリネーム
+   - ファイルパスの一貫性を確認
+
+2. **ファイル内参照の更新**
+   - 各ファイル内で他のOverviewファイルを参照している部分を更新
+   - `.md` 拡張子を含む全ての参照を対象とする
+
+3. **外部からの参照更新**
+   - CLAUDE.md 内の参照リンクを更新
+   - README.ja.md 内の参照リンクを更新
+   - README.md 内の参照リンクを更新
+   - HISTORY_CONTEXT.md 内の参照リンクを更新
+
+4. **品質チェック**
+   - task check の実施（ソース修正のため必要）
+   - リンク切れの確認
+
+5. **作業記録**
+   - WorkingLog.md に実施内容を記述
+
+6. **コミットとPR作成**
+   - git commit で変更を確定
+   - gh pr create でプルリクエストを作成
+
+### 期待効果
+- ドキュメントファイル名の一貫性向上
+- リネーム後の参照整合性確保
+- 保守性の向上
 

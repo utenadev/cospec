@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### ✅ 必須ガイド
 開発判断の**唯一の根拠**となるガイドライン：
-1. **`.rules/OverviewDesignThinking.md`**: 設計思想（**なぜ**このルールがあるのか）
-2. **`.rules/OverviewBasicRule.md`**: 実践ルール（**どうやって**開発するか）
-3. **`.rules/OverviewCodingTestingThinking.md`**: コーディング思想（**どのような**コードを書くか）
+1. **`.rules/GuidlineDesign.md`**: 設計思想（**なぜ**このルールがあるのか）
+2. **`.rules/GuidlineBasicRule.md`**: 実践ルール（**どうやって**開発するか）
+3. **`.rules/GuidlineCodingTesting.md`**: コーディング思想（**どのような**コードを書くか）
 
-**思想 → 実践の順で読む**: 必ず OverviewDesignThinking で「なぜ」を理解してから、OverviewBasicRule で「どうやって」を確認
+**思想 → 実践の順で読む**: 必ず GuidlineDesign で「なぜ」を理解してから、GuidlineBasicRule で「どうやって」を確認
 
 ---
 
@@ -92,7 +92,7 @@ cospec/
 │   ├── BLUEPRINT.md        # Technical architecture
 │   ├── PLAN.md             # Implementation plans
 │   ├── WorkingLog.md       # Development history
-│   └── Overview*.md        # Guidelines and best practices
+│   └── Guidline*.md        # Guidelines and best practices
 ├── tests/                   # Test suite (pytest)
 ├── Taskfile.yml            # Task automation (go-task)
 └── pyproject.toml          # Python project configuration
@@ -166,9 +166,9 @@ cospec/
 
 - `docs/SPEC.md` - Functional requirements (the "What")
 - `docs/BLUEPRINT.md` - Technical architecture (the "How")
-- `.rules/OverviewBasicRule.md` - Human-AI協働開発の実践ワークフロー
-- `.rules/OverviewCodingTestingThinking.md` - Coding and testing guidelines
-- `.rules/OverviewDesignThinking.md` - Design philosophy and patterns
+- `.rules/GuidlineBasicRule.md` - Human-AI協働開発の実践ワークフロー
+- `.rules/GuidlineCodingTesting.md` - Coding and testing guidelines
+- `.rules/GuidlineDesign.md` - Design philosophy and patterns
 - `docs/PLAN.md` - Implementation checklists
 - `docs/WorkingLog.md` - Development history
 
